@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Box,
     Container,
@@ -34,6 +34,7 @@ import {
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import {
     FiHome,
     FiUser,
@@ -56,16 +57,18 @@ const MotionBox = motion(Box)
 const Profile: React.FC = () => {
     const navigate = useNavigate()
     const toast = useToast()
+    const { user, updateUser } = useAuth()
 
+    // Initialize profile with Supabase user data
     const [profile, setProfile] = useState({
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@example.com',
-        phone: '+1 (555) 123-4567',
-        company: 'Legal Solutions Inc.',
-        position: 'Senior Legal Counsel',
-        location: 'New York, NY',
-        bio: 'Experienced legal professional specializing in corporate law and contract negotiations.',
+        firstName: '',
+        lastName: '',
+        email: user?.email || '',
+        phone: '',
+        company: '',
+        position: '',
+        location: '',
+        bio: '',
         avatar: ''
     })
 
@@ -82,15 +85,51 @@ const Profile: React.FC = () => {
 
     const [isEditing, setIsEditing] = useState(false)
 
-    const handleSaveProfile = () => {
-        toast({
-            title: 'Profile Updated',
-            description: 'Your profile has been successfully updated.',
-            status: 'success',
-            duration: 3000,
-            isClosable: true,
-        })
-        setIsEditing(false)
+    // Load user data when component mounts or user changes
+    useEffect(() => {
+        if (user) {
+            const fullname = user.user_metadata?.fullname || ''
+            const [firstName = '', lastName = ''] = fullname.split(' ')
+
+            setProfile(prev => ({
+                ...prev,
+                firstName,
+                lastName: lastName || '',
+                email: user.email
+            }))
+        }
+    }, [user])
+
+    const handleSaveProfile = async () => {
+        try {
+            // Update user metadata in Supabase
+            const fullname = `${profile.firstName} ${profile.lastName}`.trim()
+            await updateUser({
+                fullname,
+                phone: profile.phone,
+                company: profile.company,
+                position: profile.position,
+                location: profile.location,
+                bio: profile.bio
+            })
+
+            toast({
+                title: 'Profile Updated',
+                description: 'Your profile has been successfully updated.',
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+            })
+            setIsEditing(false)
+        } catch (error) {
+            toast({
+                title: 'Update Failed',
+                description: 'There was an error updating your profile.',
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            })
+        }
     }
 
     const handleSaveSettings = () => {
@@ -106,29 +145,29 @@ const Profile: React.FC = () => {
     const stats = [
         {
             label: 'Documents Generated',
-            value: '47',
-            change: '+12%',
+            value: '0', // TODO: This will come from user usage data
+            change: '+0%',
             isIncrease: true,
             icon: FiFileText
         },
         {
-            label: 'Active Templates',
-            value: '8',
-            change: '+3',
+            label: 'Available Tokens',
+            value: user?.user_metadata?.tokens?.toString() || '0',
+            change: 'Current balance',
             isIncrease: true,
             icon: FiBriefcase
         },
         {
-            label: 'Success Rate',
-            value: '98.5%',
-            change: '+2.1%',
+            label: 'Account Status',
+            value: user?.user_metadata?.plan_name ? 'Premium' : 'Free',
+            change: user?.user_metadata?.plan_name || 'Basic Plan',
             isIncrease: true,
             icon: FiTrendingUp
         },
         {
-            label: 'Total Savings',
-            value: '$12,450',
-            change: '+$2,100',
+            label: 'Member Since',
+            value: user ? new Date(user.id).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'N/A',
+            change: 'Join date',
             isIncrease: true,
             icon: FiActivity
         }
@@ -137,30 +176,23 @@ const Profile: React.FC = () => {
     const recentActivity = [
         {
             id: '1',
-            type: 'document',
-            title: 'Generated Service Agreement',
-            timestamp: '2 hours ago',
+            type: 'account',
+            title: 'Account created successfully',
+            timestamp: user ? `${Math.floor((Date.now() - new Date(user.id).getTime()) / (1000 * 60 * 60 * 24))} days ago` : 'Recently',
             status: 'completed'
         },
         {
             id: '2',
-            type: 'template',
-            title: 'Updated NDA Template',
-            timestamp: '5 hours ago',
+            type: 'profile',
+            title: 'Profile setup completed',
+            timestamp: user ? `${Math.floor((Date.now() - new Date(user.id).getTime()) / (1000 * 60 * 60 * 24))} days ago` : 'Recently',
             status: 'completed'
         },
         {
             id: '3',
-            type: 'document',
-            title: 'Downloaded Contract PDF',
-            timestamp: '1 day ago',
-            status: 'completed'
-        },
-        {
-            id: '4',
             type: 'settings',
-            title: 'Changed notification preferences',
-            timestamp: '2 days ago',
+            title: 'Email verification completed',
+            timestamp: user ? `${Math.floor((Date.now() - new Date(user.id).getTime()) / (1000 * 60 * 60 * 24))} days ago` : 'Recently',
             status: 'completed'
         }
     ]
@@ -282,7 +314,7 @@ const Profile: React.FC = () => {
                                                         py={1}
                                                         borderRadius="full"
                                                     >
-                                                        Professional Plan
+                                                        {user?.user_metadata?.plan_name || 'Free Plan'}
                                                     </Badge>
                                                 </VStack>
 
