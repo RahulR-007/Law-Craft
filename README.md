@@ -1,238 +1,84 @@
-# 🏛️ LawCraft
+# LawCraft - React Modernization
 
-A modern, AI-powered legal document generator built with React, TypeScript, and Supabase.
+A modern React-based legal document generation platform, converted from the original PHP/HTML/CSS/JavaScript implementation.
 
-![LawCraft](https://img.shields.io/badge/LawCraft-Legal%20Document%20Generator-purple?style=for-the-badge)
-![React](https://img.shields.io/badge/React-18.2.0-blue?style=flat-square)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square)
-![Supabase](https://img.shields.io/badge/Supabase-Auth%20%26%20DB-green?style=flat-square)
+## 🚀 Features
 
-## ✨ Features
+### ✅ Completed
+- **Modern Landing Page** with smooth scrolling sections (Home, Info, Pricing, Contact)
+- **Authentication System** with Supabase integration (Sign up/Sign in)
+- **Responsive Design** with black and purple theme matching original
+- **Dashboard** with user profile management
+- **React Router** for navigation
+- **Chakra UI** for modern component library
+- **Framer Motion** for smooth animations
+- **TypeScript** for type safety
 
-- **🔐 Secure Authentication**: Email-based authentication with Supabase
-- **📄 Document Generation**: AI-powered legal document creation (Contracts, NDAs, Loan Agreements)
-- **💎 Subscription Plans**: Multiple pricing tiers (Free, Basic ₹29, Premium ₹49)
-- **🎨 Modern UI**: Beautiful, responsive design with Chakra UI and glass morphism effects
-- **⚡ High Performance**: Built with Vite for optimal speed and performance
-- **📱 Fully Responsive**: Works seamlessly on desktop, tablet, and mobile devices
+### 🔄 In Progress
+- **AI Chat Integration** (Alice chatbot replacement)
+- **Document Generation** interface
+- **Pricing Plans** with payment integration
+- **Help/Support** pages
 
-## 🚀 Tech Stack
+### 📋 Todo
+- **Database Schema** setup in Supabase
+- **Payment Integration** (Stripe/Razorpay)
+- **Email Templates** for verification
+- **Admin Dashboard** for user management
+- **API Integration** for document generation
+- **File Upload/Download** functionality
 
-- **Frontend**: React 18 + TypeScript
-- **UI Framework**: Chakra UI + Framer Motion
-- **Authentication**: Supabase Auth
-- **Database**: Supabase (PostgreSQL)
+## 🛠️ Technology Stack
+
+- **Frontend**: React 18, TypeScript
+- **UI Library**: Chakra UI
+- **Animation**: Framer Motion
+- **Routing**: React Router Dom
+- **Backend**: Supabase (Database, Authentication, Storage)
 - **Build Tool**: Vite
-- **Routing**: React Router DOM
-- **Styling**: Emotion + CSS-in-JS
-- **Icons**: React Icons
-
-## 📦 Quick Start
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/lawcraft.git
-   cd lawcraft
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-   Create a `.env` file in the root directory:
-   ```env
-   VITE_SUPABASE_URL=your_supabase_project_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
-
-4. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open your browser**
-   Navigate to `http://localhost:3000`
-
-## 🏗️ Project Structure
-
-```
-src/
-├── components/          # Reusable UI components
-├── contexts/           # React contexts (AuthContext)
-├── pages/              # Page components
-│   ├── Auth.tsx        # Authentication page
-│   ├── Dashboard.tsx   # User dashboard
-│   ├── Landing.tsx     # Home page
-│   ├── Pricing.tsx     # Subscription plans
-│   └── DocumentGenerator.tsx # Document creation
-├── lib/                # Utilities (Supabase client)
-├── themes/             # Chakra UI theme configuration
-└── main.tsx           # Application entry point
-```
-
-## 🔧 Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-
-## 🌟 Key Pages
-
-### 🏠 Landing Page (`/`)
-- Hero section with call-to-action
-- Features overview
-- Pricing plans preview
-- Contact information
-
-### 🔐 Authentication (`/auth`)
-- Email-based registration
-- Secure login system
-- Password validation
-- Supabase integration
-
-### 📊 Dashboard (`/dashboard`)
-- User profile management
-- Plan and token information
-- Quick navigation
-- Account settings
-
-### 📄 Document Generator (`/generate`)
-- Multiple document types
-- Form-based input
-- AI-powered generation
-- Download functionality
-
-### � Pricing (`/pricing`)
-- Three subscription tiers
-- Feature comparison
-- Payment simulation
-- Plan upgrade options
-
-## 🎨 Design System
-
-### Color Palette
-- **Primary**: `#970fff` (Purple)
-- **Background**: `#0c0c0c` (Black)
-- **Secondary**: `#7817ff` (Light Purple)
-- **Text**: `#ffffff` (White)
-- **Glass**: Rgba overlays with backdrop blur
-
-### Typography
-- **Headings**: Inter/System fonts
-- **Body**: Clean, readable typography
-- **Monospace**: For code elements
-
-## 🔐 Authentication Flow
-
-1. **User Registration**
-   - Email + Password + Full Name
-   - Supabase Auth creates user
-   - User metadata stored (plan, tokens)
-
-2. **User Login**
-   - Email + Password authentication
-   - JWT token management
-   - Persistent sessions
-
-3. **User Data Structure**
-   ```typescript
-   user: {
-     id: string
-     email: string
-     user_metadata: {
-       fullname: string
-       plan_name: 'Free' | 'Basic' | 'Premium'
-       tokens: number
-     }
-   }
-   ```
-
-## 💳 Subscription Plans
-
-| Plan | Price | Documents | Features |
-|------|-------|-----------|----------|
-| **Free** | ₹0 | 2/month | Basic templates, Email support |
-| **Basic** | ₹29 | 20/month | All templates, Priority support |
-| **Premium** | ₹49 | Unlimited | AI assistance, Custom templates |
+- **Styling**: CSS Modules + Chakra UI theme
 
 ## 🚀 Deployment
 
-The application is production-ready and can be deployed to multiple platforms:
+### Quick Deploy Options
 
-### 🌐 One-Click Deployments
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/lawcraft)
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/lawcraft)
+#### Vercel (Recommended)
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables in Vercel dashboard
+3. Deploy automatically on every push
 
-### 📋 Manual Deployment
+#### Netlify
+1. Connect your GitHub repository to Netlify  
+2. Configure environment variables in Netlify dashboard
+3. Deploy automatically on every push
 
-**Vercel:**
+#### Docker
 ```bash
-npm i -g vercel
-vercel
+# Build and run with Docker
+docker build -t law-craft .
+docker run -p 80:80 law-craft
 ```
 
-**Netlify:**
+### Environment Variables Required
 ```bash
-npm run build
-# Upload dist/ folder to Netlify
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-**GitHub Pages:**
-- Automatic deployment via GitHub Actions
-- Check `.github/workflows/ci.yml`
+### Build Optimization
+- ✅ Bundle size optimized with code splitting
+- ✅ Vendor chunks separated for better caching
+- ✅ Lazy loading implemented for routes
+- ✅ Assets optimized for production
 
-For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
+## 🎨 Design System
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
-## 📝 Environment Variables
-
-```env
-# Supabase Configuration
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
-
-# Optional: API Keys for AI features
-VITE_COHERE_API_URL=https://api.cohere.ai/v1/generate
-```
-
-## 🐛 Known Issues
-
-- Payment integration is currently in demo mode
-- AI document generation uses mock data
-- Some features require Supabase project setup
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Supabase](https://supabase.com) for backend infrastructure
-- [Chakra UI](https://chakra-ui.com) for component library
-- [Framer Motion](https://framer.com/motion) for animations
-- [React Icons](https://react-icons.github.io/react-icons) for iconography
-
-## 📞 Support
-
-- 📧 Email: support@lawcraft.com
-- 💬 Discord: [Join our community](#)
-- 📖 Docs: [Documentation](#)
-
----
-
-⭐ **Star this repository if you find it helpful!**
-
-Made with ❤️ by [Your Name](https://github.com/yourusername)
+### Colors
+- **Primary Black**: `#0c0c0c`
+- **Primary Purple**: `#970fff`
+- **Secondary Purple**: `#7817ff`
+- **White**: `#ffffff`
+- **Gray variants**: For text and borders
 
 ### Typography
 - **Font Family**: Montserrat (300, 400, 700, 900)

@@ -1,19 +1,11 @@
 # Dependencies
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+/.pnp
+.pnp.js
 
-# Build outputs
-dist/
-build/
-.next/
-out/
-.nuxt/
-.cache/
-.parcel-cache/
+# Production builds
+/dist
+/build
 
 # Environment variables
 .env
@@ -21,6 +13,29 @@ out/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # Runtime data
 pids
@@ -37,9 +52,6 @@ coverage/
 
 # Dependency directories
 jspm_packages/
-
-# TypeScript cache
-*.tsbuildinfo
 
 # Optional npm cache directory
 .npm
@@ -62,43 +74,31 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env.test
-
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
 
-# Vite build tool
-.vite
+# Next.js build output
+.next
 
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Nuxt.js build / generate output
+.nuxt
+dist
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Logs
-logs
-*.log
+# Storybook build outputs
+.out
+.storybook-out
 
 # Temporary folders
 tmp/
 temp/
 
-# Lock files (choose one)
-# package-lock.json  # Uncomment if using npm
-# yarn.lock          # Uncomment if using yarn
-
-# Supabase
-.supabase/
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

@@ -1,16 +1,35 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { ChakraProvider } from '@chakra-ui/react'
-import React from 'react'
-import { Landing } from './pages/Landing'
-import { AuthPage } from './pages/Auth'
-import { Dashboard } from './pages/Dashboard'
-import { DocumentGenerator } from './pages/DocumentGenerator'
-import Pricing from './pages/Pricing'
-import Help from './pages/Help'
-import Profile from './pages/Profile'
+import { ChakraProvider, Box, Spinner, Text, VStack } from '@chakra-ui/react'
+import React, { Suspense } from 'react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import ErrorBoundary from './components/ErrorBoundary'
 import theme from './theme.new'
 import './App.css'
+
+// Lazy load components for code splitting
+const Landing = React.lazy(() => import('./pages/Landing').then(module => ({ default: module.Landing })))
+const AuthPage = React.lazy(() => import('./pages/Auth').then(module => ({ default: module.AuthPage })))
+const Dashboard = React.lazy(() => import('./pages/Dashboard').then(module => ({ default: module.Dashboard })))
+const DocumentGenerator = React.lazy(() => import('./pages/DocumentGenerator').then(module => ({ default: module.DocumentGenerator })))
+const Pricing = React.lazy(() => import('./pages/Pricing'))
+const Help = React.lazy(() => import('./pages/Help'))
+const Profile = React.lazy(() => import('./pages/Profile'))
+
+// Loading component
+const LoadingSpinner = () => (
+  <Box
+    display="flex"
+    justifyContent="center"
+    alignItems="center"
+    height="100vh"
+    bg="black"
+  >
+    <VStack spacing={4}>
+      <Spinner size="xl" color="purple.400" thickness="4px" />
+      <Text color="white" fontSize="lg">Loading...</Text>
+    </VStack>
+  </Box>
+)
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth()
@@ -24,49 +43,61 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 function App() {
   return (
-    <ChakraProvider theme={theme}>
-      <AuthProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/generate"
-              element={
-                <ProtectedRoute>
-                  <DocumentGenerator />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/pricing"
-              element={<Pricing />}
-            />
-            <Route
-              path="/help"
-              element={<Help />}
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </Router>
-      </AuthProvider>
-    </ChakraProvider>
+    <ErrorBoundary>
+      <ChakraProvider theme={theme}>
+        <AuthProvider>
+          <Router>
+            <Suspense fallback={<LoadingSpinner />}>
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/auth" element={<AuthPage />} />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/generate"
+                  element={
+                    <ProtectedRoute>
+                      <DocumentGenerator />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/pricing"
+                  element={
+                    <ProtectedRoute>
+                      <Pricing />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/help"
+                  element={
+                    <ProtectedRoute>
+                      <Help />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </Suspense>
+          </Router>
+        </AuthProvider>
+      </ChakraProvider>
+    </ErrorBoundary>
   )
 }
 
