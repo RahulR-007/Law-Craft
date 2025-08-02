@@ -15,6 +15,7 @@ import {
     Select,
     Switch,
     useToast,
+    useColorMode,
     IconButton,
     Avatar,
     Badge,
@@ -58,6 +59,7 @@ const Profile: React.FC = () => {
     const navigate = useNavigate()
     const toast = useToast()
     const { user, updateUser } = useAuth()
+    const { colorMode, setColorMode } = useColorMode()
 
     // Initialize profile with Supabase user data
     const [profile, setProfile] = useState({
@@ -78,7 +80,7 @@ const Profile: React.FC = () => {
         documentUpdates: true,
         securityAlerts: true,
         marketingEmails: false,
-        theme: 'dark',
+        theme: colorMode as 'light' | 'dark' | 'auto',
         language: 'en',
         timezone: 'America/New_York'
     })
@@ -90,15 +92,31 @@ const Profile: React.FC = () => {
         if (user) {
             const fullname = user.user_metadata?.fullname || ''
             const [firstName = '', lastName = ''] = fullname.split(' ')
-
+            
             setProfile(prev => ({
                 ...prev,
                 firstName,
                 lastName: lastName || '',
                 email: user.email
             }))
+
+            // Load user settings from metadata
+            const userSettings = user.user_metadata?.settings as any
+            if (userSettings) {
+                setSettings(prev => ({
+                    ...prev,
+                    ...userSettings
+                }))
+            }
         }
     }, [user])
+
+    // Update color mode when theme setting changes
+    useEffect(() => {
+        if (settings.theme !== colorMode) {
+            setColorMode(settings.theme)
+        }
+    }, [settings.theme, colorMode, setColorMode])
 
     const handleSaveProfile = async () => {
         try {
@@ -132,14 +150,29 @@ const Profile: React.FC = () => {
         }
     }
 
-    const handleSaveSettings = () => {
-        toast({
-            title: 'Settings Saved',
-            description: 'Your preferences have been saved.',
-            status: 'success',
-            duration: 3000,
-            isClosable: true,
-        })
+    const handleSaveSettings = async () => {
+        try {
+            // Save settings to Supabase user metadata
+            await updateUser({
+                settings: settings
+            })
+            
+            toast({
+                title: 'Settings Saved',
+                description: 'Your preferences have been saved successfully.',
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+            })
+        } catch (error) {
+            toast({
+                title: 'Save Failed',
+                description: 'There was an error saving your settings.',
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            })
+        }
     }
 
     const stats = [
@@ -177,23 +210,30 @@ const Profile: React.FC = () => {
         {
             id: '1',
             type: 'account',
-            title: 'Account created successfully',
-            timestamp: user ? `${Math.floor((Date.now() - new Date(user.id).getTime()) / (1000 * 60 * 60 * 24))} days ago` : 'Recently',
+            title: 'Account created',
+            timestamp: user ? new Date((user as any).created_at).toLocaleDateString() : 'Recently',
             status: 'completed'
         },
         {
             id: '2',
             type: 'profile',
-            title: 'Profile setup completed',
-            timestamp: user ? `${Math.floor((Date.now() - new Date(user.id).getTime()) / (1000 * 60 * 60 * 24))} days ago` : 'Recently',
-            status: 'completed'
+            title: user?.user_metadata?.fullname ? 'Profile completed' : 'Profile setup pending',
+            timestamp: user?.user_metadata?.fullname ? 'Completed' : 'Pending',
+            status: user?.user_metadata?.fullname ? 'completed' : 'pending'
         },
         {
             id: '3',
             type: 'settings',
-            title: 'Email verification completed',
-            timestamp: user ? `${Math.floor((Date.now() - new Date(user.id).getTime()) / (1000 * 60 * 60 * 24))} days ago` : 'Recently',
+            title: `Current plan: ${user?.user_metadata?.plan_name || 'Free Plan'}`,
+            timestamp: user?.user_metadata?.plan_name ? 'Active' : 'Default',
             status: 'completed'
+        },
+        {
+            id: '4',
+            type: 'usage',
+            title: `Available tokens: ${user?.user_metadata?.tokens || 0}`,
+            timestamp: user?.user_metadata?.tokens ? `${user.user_metadata.tokens} remaining` : 'No tokens',
+            status: user?.user_metadata?.tokens ? 'completed' : 'warning'
         }
     ]
 
@@ -543,7 +583,14 @@ const Profile: React.FC = () => {
                                                         <FormLabel color="white">Theme</FormLabel>
                                                         <Select
                                                             value={settings.theme}
-                                                            onChange={(e) => setSettings({ ...settings, theme: e.target.value })}
+                                                            onChange={(e) => {
+                                                                const newTheme = e.target.value as 'light' | 'dark' | 'auto'
+                                                                setSettings({ ...settings, theme: newTheme })
+                                                                // Immediately apply theme change
+                                                                if (newTheme === 'light' || newTheme === 'dark') {
+                                                                    setColorMode(newTheme)
+                                                                }
+                                                            }}
                                                             bg="rgba(255, 255, 255, 0.1)"
                                                             border="1px solid rgba(255, 255, 255, 0.2)"
                                                             color="white"

@@ -8,6 +8,7 @@ interface User {
     fullname?: string
     plan_name?: string
     tokens?: number
+    settings?: any
   }
 }
 
