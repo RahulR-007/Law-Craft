@@ -2,10 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ChakraProvider } from '@chakra-ui/react'
 import React from 'react'
 import { Landing } from './pages/Landing'
-import { SimpleLanding } from './pages/SimpleLanding'
 import { AuthPage } from './pages/Auth'
 import { Dashboard } from './pages/Dashboard'
-import { TestPage } from './pages/TestPage'
 import { DocumentGenerator } from './pages/DocumentGenerator'
 import Pricing from './pages/Pricing'
 import Help from './pages/Help'
@@ -31,8 +29,6 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/simple" element={<SimpleLanding />} />
-            <Route path="/test" element={<TestPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route
               path="/dashboard"

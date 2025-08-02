@@ -160,16 +160,31 @@ src/
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
-1. Push code to GitHub
-2. Connect repository to Vercel
-3. Add environment variables
-4. Deploy automatically
+The application is production-ready and can be deployed to multiple platforms:
 
-### Netlify
-1. Build the project: `npm run build`
-2. Upload `dist/` folder to Netlify
-3. Configure environment variables
+### 🌐 One-Click Deployments
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/lawcraft)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/lawcraft)
+
+### 📋 Manual Deployment
+
+**Vercel:**
+```bash
+npm i -g vercel
+vercel
+```
+
+**Netlify:**
+```bash
+npm run build
+# Upload dist/ folder to Netlify
+```
+
+**GitHub Pages:**
+- Automatic deployment via GitHub Actions
+- Check `.github/workflows/ci.yml`
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ## 🤝 Contributing
 
