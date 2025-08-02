@@ -1,0 +1,612 @@
+import React, { useState } from 'react'
+import {
+  Box,
+  Container,
+  Heading,
+  Text,
+  Button,
+  Textarea,
+  Input,
+  VStack,
+  HStack,
+  Flex,
+  FormControl,
+  FormLabel,
+  Select,
+  useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Spinner,
+  Alert,
+  AlertIcon,
+} from '@chakra-ui/react'
+import { motion } from 'framer-motion'
+import { useAuth } from '../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
+import { FiHome, FiUser, FiHelpCircle, FiDownload, FiSend } from 'react-icons/fi'
+
+const MotionBox = motion(Box)
+
+const Navigation: React.FC = () => {
+  const { user, signOut } = useAuth()
+  const navigate = useNavigate()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const toast = useToast()
+
+  const handleLogout = async () => {
+    const { error } = await signOut()
+    if (error) {
+      toast({
+        title: 'Error signing out',
+        description: error.message,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    } else {
+      navigate('/')
+    }
+  }
+
+  return (
+    <>
+      <HStack
+        position="fixed"
+        top="20px"
+        left="10px"
+        spacing={4}
+        bg="rgba(0, 0, 0, 0.8)"
+        backdropFilter="blur(10px)"
+        borderRadius="lg"
+        p={3}
+        border="1px solid"
+        borderColor="rgba(151, 15, 255, 0.3)"
+        boxShadow="0 0 10px rgba(151, 15, 255, 0.5)"
+        zIndex={1000}
+      >
+        <Button
+          size="sm"
+          variant="ghost"
+          color="white"
+          _hover={{ color: 'brand.500' }}
+          onClick={() => navigate('/')}
+        >
+          <FiHome />
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          color="white"
+          _hover={{ color: 'brand.500' }}
+          onClick={onOpen}
+        >
+          <FiUser />
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          color="white"
+          _hover={{ color: 'brand.500' }}
+          onClick={() => navigate('/help')}
+        >
+          <FiHelpCircle />
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          color="brand.500"
+          _hover={{ color: 'brand.400' }}
+          onClick={() => navigate('/documents')}
+        >
+          Current Page
+        </Button>
+      </HStack>
+
+      {/* User Profile Modal */}
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay backdropFilter="blur(5px)" />
+        <ModalContent bg="black.900" border="1px solid" borderColor="brand.500">
+          <ModalHeader color="white">Profile</ModalHeader>
+          <ModalCloseButton color="white" />
+          <ModalBody pb={6}>
+            <VStack spacing={4} align="center">
+              <Text color="white" fontSize="xl" fontWeight="bold">
+                Welcome, {user?.user_metadata?.fullname || user?.email}
+              </Text>
+              <HStack>
+                <Text color="gray.400">Plan:</Text>
+                <Text color="brand.500" fontWeight="bold">
+                  {user?.user_metadata?.plan_name || 'Free'}
+                </Text>
+              </HStack>
+              <HStack>
+                <Text color="gray.400">Tokens:</Text>
+                <Text color="white">{user?.user_metadata?.tokens || 2}</Text>
+              </HStack>
+              <Button
+                colorScheme="red"
+                variant="outline"
+                onClick={handleLogout}
+                w="full"
+              >
+                Logout
+              </Button>
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
+  )
+}
+
+export const DocumentGenerator: React.FC = () => {
+  const [formData, setFormData] = useState({
+    documentType: '',
+    prompt: '',
+    partyName1: '',
+    partyName2: '',
+    amount: '',
+    date: '',
+  })
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [generatedDocument, setGeneratedDocument] = useState('')
+  const { user } = useAuth()
+  const toast = useToast()
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  const handleGenerate = async () => {
+    if (!formData.documentType || !formData.prompt) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please select a document type and provide a description.',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      })
+      return
+    }
+
+    setIsGenerating(true)
+
+    // Simulate document generation (replace with actual AI API call)
+    try {
+      await new Promise(resolve => setTimeout(resolve, 3000))
+
+      const mockDocument = `
+LEGAL DOCUMENT - ${formData.documentType.toUpperCase()}
+
+Generated by LawCraft AI
+
+Date: ${new Date().toLocaleDateString()}
+
+Parties:
+${formData.partyName1 ? `Party 1: ${formData.partyName1}` : ''}
+${formData.partyName2 ? `Party 2: ${formData.partyName2}` : ''}
+
+Description:
+${formData.prompt}
+
+${formData.amount ? `Amount: $${formData.amount}` : ''}
+
+This document has been generated using AI and should be reviewed by a legal professional before use.
+
+Generated for: ${user?.user_metadata?.fullname || user?.email}
+User Plan: ${user?.user_metadata?.plan_name || 'Free'}
+
+---
+
+[This is a mock document. In the full implementation, this would be replaced with actual AI-generated legal content.]
+      `
+
+      setGeneratedDocument(mockDocument)
+
+      toast({
+        title: 'Document Generated Successfully!',
+        description: 'Your legal document has been created.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
+    } catch (error) {
+      toast({
+        title: 'Generation Failed',
+        description: 'There was an error generating your document.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  const handleDownload = () => {
+    const element = document.createElement('a')
+    const file = new Blob([generatedDocument], { type: 'text/plain' })
+    element.href = URL.createObjectURL(file)
+    element.download = `${formData.documentType}-${Date.now()}.txt`
+    document.body.appendChild(element)
+    element.click()
+    document.body.removeChild(element)
+  }
+
+  const suggestions = [
+    'Create NDA for Company LawCraft and TPT College',
+    'Create Employment Contract for Sales Representative',
+    'Create Partnership Agreement for Real Estate Investment',
+    'Create Service Agreement for Freelance Graphic Designer',
+    'Create Consulting Agreement for Marketing Consultant',
+    'Draft Partnership Agreement for Startup Launch',
+    'Prepare Service Agreement for 6-Month Project',
+  ]
+
+  return (
+    <Box minH="100vh" bg="black" position="relative">
+      <Navigation />
+
+      {/* Background effects */}
+      <Box
+        position="absolute"
+        top="10%"
+        left="5%"
+        w="200px"
+        h="200px"
+        borderRadius="50%"
+        bg="brand.500"
+        opacity="0.1"
+        filter="blur(60px)"
+      />
+      <Box
+        position="absolute"
+        bottom="10%"
+        right="5%"
+        w="250px"
+        h="250px"
+        borderRadius="50%"
+        bg="brand.600"
+        opacity="0.1"
+        filter="blur(80px)"
+      />
+
+      <Container maxW="6xl" pt={20}>
+        <MotionBox
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <VStack spacing={8} textAlign="center">
+            {/* Header */}
+            <VStack spacing={4}>
+              <Heading
+                fontSize={{ base: '2xl', md: '3xl', lg: '4xl' }}
+                color="white"
+                fontWeight="900"
+              >
+                Legal Document Generator
+              </Heading>
+              <Text
+                fontSize="lg"
+                color="gray.400"
+                maxW="2xl"
+                lineHeight="tall"
+              >
+                Powered by Alice AI - Create professional legal documents in minutes
+              </Text>
+            </VStack>
+
+            <Flex
+              direction={{ base: 'column', lg: 'row' }}
+              w="full"
+              gap={8}
+            >
+              {/* Form Section */}
+              <Box
+                flex="1"
+                bg="rgba(255, 255, 255, 0.05)"
+                backdropFilter="blur(10px)"
+                borderRadius="xl"
+                border="1px solid"
+                borderColor="rgba(255, 255, 255, 0.1)"
+                boxShadow="0 0 30px rgba(151, 15, 255, 0.3)"
+                p={8}
+              >
+                <VStack spacing={6} align="stretch">
+                  <Heading fontSize="xl" color="white" textAlign="center">
+                    Document Details
+                  </Heading>
+
+                  <FormControl>
+                    <FormLabel color="white">Document Type</FormLabel>
+                    <Select
+                      name="documentType"
+                      value={formData.documentType}
+                      onChange={handleInputChange}
+                      placeholder="Select document type"
+                      bg="rgba(255, 255, 255, 0.1)"
+                      border="1px solid"
+                      borderColor="rgba(255, 255, 255, 0.2)"
+                      color="white"
+                      _focus={{
+                        borderColor: 'brand.500',
+                        boxShadow: '0 0 0 1px #970fff',
+                      }}
+                    >
+                      <option value="contract" style={{ background: '#0c0c0c' }}>
+                        Contract Agreement
+                      </option>
+                      <option value="nda" style={{ background: '#0c0c0c' }}>
+                        Non-Disclosure Agreement
+                      </option>
+                      <option value="loan" style={{ background: '#0c0c0c' }}>
+                        Loan Agreement
+                      </option>
+                      <option value="employment" style={{ background: '#0c0c0c' }}>
+                        Employment Contract
+                      </option>
+                      <option value="partnership" style={{ background: '#0c0c0c' }}>
+                        Partnership Agreement
+                      </option>
+                    </Select>
+                  </FormControl>
+
+                  <FormControl>
+                    <FormLabel color="white">Document Description</FormLabel>
+                    <Textarea
+                      name="prompt"
+                      value={formData.prompt}
+                      onChange={handleInputChange}
+                      placeholder="Describe your document requirements in detail..."
+                      rows={4}
+                      bg="rgba(255, 255, 255, 0.1)"
+                      border="1px solid"
+                      borderColor="rgba(255, 255, 255, 0.2)"
+                      color="white"
+                      _placeholder={{ color: 'gray.400' }}
+                      _focus={{
+                        borderColor: 'brand.500',
+                        boxShadow: '0 0 0 1px #970fff',
+                      }}
+                    />
+                  </FormControl>
+
+                  <HStack spacing={4}>
+                    <FormControl>
+                      <FormLabel color="white">Party 1 Name</FormLabel>
+                      <Input
+                        name="partyName1"
+                        value={formData.partyName1}
+                        onChange={handleInputChange}
+                        placeholder="Enter first party name"
+                        bg="rgba(255, 255, 255, 0.1)"
+                        border="1px solid"
+                        borderColor="rgba(255, 255, 255, 0.2)"
+                        color="white"
+                        _placeholder={{ color: 'gray.400' }}
+                        _focus={{
+                          borderColor: 'brand.500',
+                          boxShadow: '0 0 0 1px #970fff',
+                        }}
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel color="white">Party 2 Name</FormLabel>
+                      <Input
+                        name="partyName2"
+                        value={formData.partyName2}
+                        onChange={handleInputChange}
+                        placeholder="Enter second party name"
+                        bg="rgba(255, 255, 255, 0.1)"
+                        border="1px solid"
+                        borderColor="rgba(255, 255, 255, 0.2)"
+                        color="white"
+                        _placeholder={{ color: 'gray.400' }}
+                        _focus={{
+                          borderColor: 'brand.500',
+                          boxShadow: '0 0 0 1px #970fff',
+                        }}
+                      />
+                    </FormControl>
+                  </HStack>
+
+                  <HStack spacing={4}>
+                    <FormControl>
+                      <FormLabel color="white">Amount (if applicable)</FormLabel>
+                      <Input
+                        name="amount"
+                        value={formData.amount}
+                        onChange={handleInputChange}
+                        placeholder="Enter amount"
+                        type="number"
+                        bg="rgba(255, 255, 255, 0.1)"
+                        border="1px solid"
+                        borderColor="rgba(255, 255, 255, 0.2)"
+                        color="white"
+                        _placeholder={{ color: 'gray.400' }}
+                        _focus={{
+                          borderColor: 'brand.500',
+                          boxShadow: '0 0 0 1px #970fff',
+                        }}
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel color="white">Date</FormLabel>
+                      <Input
+                        name="date"
+                        value={formData.date}
+                        onChange={handleInputChange}
+                        type="date"
+                        bg="rgba(255, 255, 255, 0.1)"
+                        border="1px solid"
+                        borderColor="rgba(255, 255, 255, 0.2)"
+                        color="white"
+                        _focus={{
+                          borderColor: 'brand.500',
+                          boxShadow: '0 0 0 1px #970fff',
+                        }}
+                      />
+                    </FormControl>
+                  </HStack>
+
+                  <Button
+                    size="lg"
+                    bg="brand.500"
+                    color="white"
+                    _hover={{ bg: 'brand.600' }}
+                    onClick={handleGenerate}
+                    isLoading={isGenerating}
+                    loadingText="Generating..."
+                    leftIcon={isGenerating ? <Spinner size="sm" /> : <FiSend />}
+                    fontWeight="700"
+                    textTransform="uppercase"
+                  >
+                    Generate Document
+                  </Button>
+                </VStack>
+              </Box>
+
+              {/* Preview/Results Section */}
+              <Box
+                flex="1"
+                bg="rgba(255, 255, 255, 0.05)"
+                backdropFilter="blur(10px)"
+                borderRadius="xl"
+                border="1px solid"
+                borderColor="rgba(255, 255, 255, 0.1)"
+                boxShadow="0 0 30px rgba(151, 15, 255, 0.3)"
+                p={8}
+              >
+                <VStack spacing={6} align="stretch" h="full">
+                  <Heading fontSize="xl" color="white" textAlign="center">
+                    Generated Document
+                  </Heading>
+
+                  {!generatedDocument && !isGenerating && (
+                    <VStack spacing={4} flex="1" justify="center">
+                      <Text color="gray.400" textAlign="center">
+                        Your generated document will appear here
+                      </Text>
+                      <Text fontSize="sm" color="gray.500" textAlign="center">
+                        Fill out the form and click "Generate Document" to get started
+                      </Text>
+                    </VStack>
+                  )}
+
+                  {isGenerating && (
+                    <VStack spacing={4} flex="1" justify="center">
+                      <Spinner size="xl" color="brand.500" />
+                      <Text color="white" textAlign="center">
+                        Generating your document...
+                      </Text>
+                      <Text fontSize="sm" color="gray.400" textAlign="center">
+                        This may take a few moments
+                      </Text>
+                    </VStack>
+                  )}
+
+                  {generatedDocument && (
+                    <>
+                      <Box
+                        flex="1"
+                        bg="rgba(0, 0, 0, 0.3)"
+                        borderRadius="lg"
+                        p={4}
+                        border="1px solid"
+                        borderColor="rgba(255, 255, 255, 0.1)"
+                        overflowY="auto"
+                        maxH="400px"
+                      >
+                        <Text
+                          color="white"
+                          fontSize="sm"
+                          whiteSpace="pre-wrap"
+                          fontFamily="monospace"
+                        >
+                          {generatedDocument}
+                        </Text>
+                      </Box>
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        borderColor="brand.500"
+                        color="brand.500"
+                        _hover={{ bg: 'brand.500', color: 'white' }}
+                        onClick={handleDownload}
+                        leftIcon={<FiDownload />}
+                        fontWeight="700"
+                        textTransform="uppercase"
+                      >
+                        Download Document
+                      </Button>
+                    </>
+                  )}
+                </VStack>
+              </Box>
+            </Flex>
+
+            {/* Suggestions */}
+            <Box w="full" maxW="4xl">
+              <VStack spacing={4}>
+                <Heading fontSize="lg" color="white">
+                  Quick Suggestions
+                </Heading>
+                <Flex flexWrap="wrap" gap={2} justify="center">
+                  {suggestions.map((suggestion, index) => (
+                    <Button
+                      key={index}
+                      size="sm"
+                      variant="outline"
+                      borderColor="rgba(151, 15, 255, 0.3)"
+                      color="gray.400"
+                      _hover={{
+                        borderColor: 'brand.500',
+                        color: 'brand.500',
+                        bg: 'rgba(151, 15, 255, 0.1)',
+                      }}
+                      onClick={() => setFormData({ ...formData, prompt: suggestion })}
+                      fontSize="xs"
+                      h="auto"
+                      py={2}
+                      px={3}
+                      whiteSpace="normal"
+                      textAlign="center"
+                    >
+                      {suggestion}
+                    </Button>
+                  ))}
+                </Flex>
+              </VStack>
+            </Box>
+
+            {/* Warning */}
+            <Alert
+              status="warning"
+              bg="rgba(251, 176, 64, 0.1)"
+              border="1px solid"
+              borderColor="rgba(251, 176, 64, 0.3)"
+              borderRadius="lg"
+              maxW="4xl"
+            >
+              <AlertIcon color="orange.400" />
+              <Text color="orange.300" fontSize="sm">
+                <strong>Legal Disclaimer:</strong> Documents generated by AI should always be reviewed
+                by a qualified legal professional before use. LawCraft AI is a tool to assist in
+                document creation but does not replace professional legal advice.
+              </Text>
+            </Alert>
+          </VStack>
+        </MotionBox>
+      </Container>
+    </Box>
+  )
+}

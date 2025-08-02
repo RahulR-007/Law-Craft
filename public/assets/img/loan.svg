@@ -1,0 +1,11 @@
+<!-- Placeholder SVG for loan agreement icon -->
+<svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="150" height="150" rx="75" fill="#970fff" fill-opacity="0.1"/>
+  <rect x="30" y="30" width="90" height="90" rx="8" fill="#970fff" fill-opacity="0.2"/>
+  <circle cx="75" cy="60" r="15" fill="#970fff"/>
+  <text x="75" y="66" text-anchor="middle" fill="white" font-size="12" font-family="Arial">$</text>
+  <rect x="45" y="85" width="60" height="3" rx="1.5" fill="#970fff"/>
+  <rect x="45" y="92" width="50" height="3" rx="1.5" fill="#970fff"/>
+  <rect x="45" y="99" width="55" height="3" rx="1.5" fill="#970fff"/>
+  <rect x="45" y="106" width="45" height="3" rx="1.5" fill="#970fff"/>
+</svg>
