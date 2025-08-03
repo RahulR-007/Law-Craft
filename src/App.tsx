@@ -35,10 +35,10 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const { user, loading } = useAuth()
 
   if (loading) {
-    return <div>Loading...</div>
+    return <LoadingSpinner />
   }
 
-  return user ? <>{children}</> : <Navigate to="/auth" />
+  return user ? <>{children}</> : <Navigate to="/auth" replace />
 }
 
 function App() {
@@ -69,19 +69,11 @@ function App() {
                 />
                 <Route
                   path="/pricing"
-                  element={
-                    <ProtectedRoute>
-                      <Pricing />
-                    </ProtectedRoute>
-                  }
+                  element={<Pricing />}
                 />
                 <Route
                   path="/help"
-                  element={
-                    <ProtectedRoute>
-                      <Help />
-                    </ProtectedRoute>
-                  }
+                  element={<Help />}
                 />
                 <Route
                   path="/profile"

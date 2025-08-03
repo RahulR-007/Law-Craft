@@ -8,6 +8,11 @@ interface User {
     fullname?: string
     plan_name?: string
     tokens?: number
+    phone?: string
+    company?: string
+    position?: string
+    location?: string
+    bio?: string
     settings?: any
   }
 }
@@ -99,8 +104,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         data: userData
       })
       if (error) throw error
+      
+      // Refresh the session to get updated user data
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session?.user) {
+        setUser(session.user as User)
+      }
     } catch (error) {
       console.error('Error updating user:', error)
+      throw error
     }
   }
 

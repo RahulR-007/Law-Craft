@@ -97,7 +97,12 @@ const Profile: React.FC = () => {
                 ...prev,
                 firstName,
                 lastName: lastName || '',
-                email: user.email
+                email: user.email || '',
+                phone: user.user_metadata?.phone || '',
+                company: user.user_metadata?.company || '',
+                position: user.user_metadata?.position || '',
+                location: user.user_metadata?.location || '',
+                bio: user.user_metadata?.bio || ''
             }))
 
             // Load user settings from metadata
@@ -129,16 +134,21 @@ const Profile: React.FC = () => {
 
     const handleSaveProfile = async () => {
         try {
-            // Update user metadata in Supabase
+            // Update user metadata in Supabase with all profile fields
             const fullname = `${profile.firstName} ${profile.lastName}`.trim()
-            await updateUser({
+            const updateData = {
+                // Keep existing metadata
+                ...user?.user_metadata,
+                // Update with new values
                 fullname,
                 phone: profile.phone,
                 company: profile.company,
                 position: profile.position,
                 location: profile.location,
                 bio: profile.bio
-            })
+            }
+            
+            await updateUser(updateData)
 
             toast({
                 title: 'Profile Updated',
@@ -149,6 +159,7 @@ const Profile: React.FC = () => {
             })
             setIsEditing(false)
         } catch (error) {
+            console.error('Profile update error:', error)
             toast({
                 title: 'Update Failed',
                 description: 'There was an error updating your profile.',
@@ -247,7 +258,13 @@ const Profile: React.FC = () => {
     ]
 
     return (
-        <Box minH="100vh" position="relative">
+        <Box 
+            minH="100vh" 
+            position="relative"
+            bg={colorMode === 'dark' ? 'gray.900' : 'white'}
+            color={colorMode === 'dark' ? 'white' : 'gray.800'}
+            transition="all 0.3s ease"
+        >
             {/* Navigation */}
             <Flex
                 position="fixed"
@@ -255,16 +272,21 @@ const Profile: React.FC = () => {
                 left="0"
                 right="0"
                 h="70px"
-                bg="rgba(0, 0, 0, 0.9)"
+                bg={colorMode === 'dark' ? "rgba(0, 0, 0, 0.9)" : "rgba(255, 255, 255, 0.9)"}
                 backdropFilter="blur(20px)"
-                border="1px solid rgba(255, 255, 255, 0.1)"
+                border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`}
                 align="center"
                 justify="space-between"
                 px={8}
                 zIndex="1000"
-                boxShadow="0 8px 20px rgba(0, 0, 0, 0.3)"
+                boxShadow={colorMode === 'dark' ? "0 8px 20px rgba(0, 0, 0, 0.3)" : "0 8px 20px rgba(0, 0, 0, 0.1)"}
+                transition="all 0.3s ease"
             >
-                <Text fontSize="2xl" fontWeight="bold" color="white">
+                <Text 
+                    fontSize="2xl" 
+                    fontWeight="bold" 
+                    color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                >
                     Law<Text as="span" color="brand.500">Craft</Text> AI
                 </Text>
                 <HStack spacing={4}>
@@ -272,13 +294,16 @@ const Profile: React.FC = () => {
                         aria-label="Home"
                         icon={<FiHome />}
                         variant="ghost"
-                        color="white"
+                        color={colorMode === 'dark' ? 'white' : 'gray.600'}
                         onClick={() => navigate('/dashboard')}
+                        _hover={{
+                            bg: colorMode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                        }}
                     />
                 </HStack>
             </Flex>
 
-            <Container maxW="7xl" pt="100px" pb="20px">
+            <Container maxW="7xl" pt="100px" pb="20px" px={{ base: 4, md: 8 }}>
                 <MotionBox
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -287,39 +312,65 @@ const Profile: React.FC = () => {
                     {/* Header Section */}
                     <VStack spacing={8} textAlign="center" mb={12}>
                         <Heading
-                            fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}
-                            color="white"
+                            fontSize={{ base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' }}
+                            color={colorMode === 'dark' ? 'white' : 'gray.800'}
                             fontWeight="900"
+                            lineHeight="shorter"
                         >
                             Your <Text as="span" color="brand.500">Profile</Text>
                         </Heading>
-                        <Text fontSize="xl" color="gray.400" maxW="2xl">
+                        <Text 
+                            fontSize={{ base: 'md', md: 'xl' }}
+                            color={colorMode === 'dark' ? 'gray.400' : 'gray.600'} 
+                            maxW="2xl"
+                            px={{ base: 4, md: 0 }}
+                        >
                             Manage your account settings, preferences, and view your activity statistics.
                         </Text>
                     </VStack>
 
-                    <Tabs variant="soft-rounded" colorScheme="purple">
+                    <Tabs variant="soft-rounded" colorScheme="purple" size={{ base: 'sm', md: 'md' }}>
                         <TabList
-                            bg="rgba(255, 255, 255, 0.05)"
+                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.05)"}
                             backdropFilter="blur(10px)"
-                            border="1px solid rgba(255, 255, 255, 0.1)"
+                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`}
                             borderRadius="xl"
                             p={2}
                             mb={8}
+                            flexWrap={{ base: 'wrap', md: 'nowrap' }}
+                            gap={{ base: 2, md: 0 }}
                         >
-                            <Tab color="gray.400" _selected={{ color: 'white', bg: 'linear-gradient(135deg, #970fff, #7817ff)' }}>
+                            <Tab 
+                                color={colorMode === 'dark' ? 'gray.400' : 'gray.600'} 
+                                _selected={{ 
+                                    color: 'white', 
+                                    bg: 'linear-gradient(135deg, #970fff, #7817ff)' 
+                                }}
+                            >
                                 <HStack spacing={2}>
                                     <FiUser />
                                     <Text>Profile</Text>
                                 </HStack>
                             </Tab>
-                            <Tab color="gray.400" _selected={{ color: 'white', bg: 'linear-gradient(135deg, #970fff, #7817ff)' }}>
+                            <Tab 
+                                color={colorMode === 'dark' ? 'gray.400' : 'gray.600'} 
+                                _selected={{ 
+                                    color: 'white', 
+                                    bg: 'linear-gradient(135deg, #970fff, #7817ff)' 
+                                }}
+                            >
                                 <HStack spacing={2}>
                                     <FiSettings />
                                     <Text>Settings</Text>
                                 </HStack>
                             </Tab>
-                            <Tab color="gray.400" _selected={{ color: 'white', bg: 'linear-gradient(135deg, #970fff, #7817ff)' }}>
+                            <Tab 
+                                color={colorMode === 'dark' ? 'gray.400' : 'gray.600'} 
+                                _selected={{ 
+                                    color: 'white', 
+                                    bg: 'linear-gradient(135deg, #970fff, #7817ff)' 
+                                }}
+                            >
                                 <HStack spacing={2}>
                                     <FiActivity />
                                     <Text>Activity</Text>
@@ -334,27 +385,38 @@ const Profile: React.FC = () => {
                                     {/* Profile Card */}
                                     <GridItem>
                                         <Card
-                                            bg="rgba(255, 255, 255, 0.08)"
+                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.02)"}
                                             backdropFilter="blur(20px)"
-                                            border="1px solid rgba(255, 255, 255, 0.2)"
+                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
                                             borderRadius="2xl"
-                                            p={8}
+                                            p={{ base: 4, md: 8 }}
                                             h="fit-content"
+                                            boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
                                         >
                                             <VStack spacing={6}>
                                                 <Avatar
-                                                    size="2xl"
+                                                    size={{ base: 'xl', md: '2xl' }}
                                                     name={`${profile.firstName} ${profile.lastName}`}
                                                     bg="linear-gradient(135deg, #970fff, #7817ff)"
                                                     color="white"
                                                 />
 
                                                 <VStack spacing={2} textAlign="center">
-                                                    <Heading size="lg" color="white">
+                                                    <Heading 
+                                                        size={{ base: 'md', md: 'lg' }} 
+                                                        color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                                    >
                                                         {profile.firstName} {profile.lastName}
                                                     </Heading>
-                                                    <Text color="gray.400">{profile.position}</Text>
-                                                    <Text color="gray.500" fontSize="sm">{profile.company}</Text>
+                                                    <Text color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}>
+                                                        {profile.position}
+                                                    </Text>
+                                                    <Text 
+                                                        color={colorMode === 'dark' ? 'gray.500' : 'gray.500'} 
+                                                        fontSize="sm"
+                                                    >
+                                                        {profile.company}
+                                                    </Text>
 
                                                     <Badge
                                                         bg="linear-gradient(135deg, rgba(151, 15, 255, 0.2), rgba(151, 15, 255, 0.1))"
@@ -372,15 +434,31 @@ const Profile: React.FC = () => {
                                                 <VStack spacing={3} w="full" align="start">
                                                     <HStack spacing={3}>
                                                         <FiMail color="#970fff" />
-                                                        <Text color="gray.300" fontSize="sm">{profile.email}</Text>
+                                                        <Text 
+                                                            color={colorMode === 'dark' ? 'gray.300' : 'gray.600'} 
+                                                            fontSize="sm"
+                                                            wordBreak="break-all"
+                                                        >
+                                                            {profile.email}
+                                                        </Text>
                                                     </HStack>
                                                     <HStack spacing={3}>
                                                         <FiPhone color="#970fff" />
-                                                        <Text color="gray.300" fontSize="sm">{profile.phone}</Text>
+                                                        <Text 
+                                                            color={colorMode === 'dark' ? 'gray.300' : 'gray.600'} 
+                                                            fontSize="sm"
+                                                        >
+                                                            {profile.phone || 'Not provided'}
+                                                        </Text>
                                                     </HStack>
                                                     <HStack spacing={3}>
                                                         <FiMapPin color="#970fff" />
-                                                        <Text color="gray.300" fontSize="sm">{profile.location}</Text>
+                                                        <Text 
+                                                            color={colorMode === 'dark' ? 'gray.300' : 'gray.600'} 
+                                                            fontSize="sm"
+                                                        >
+                                                            {profile.location || 'Not provided'}
+                                                        </Text>
                                                     </HStack>
                                                 </VStack>
 
@@ -405,21 +483,28 @@ const Profile: React.FC = () => {
                                     {/* Profile Form */}
                                     <GridItem>
                                         <Card
-                                            bg="rgba(255, 255, 255, 0.08)"
+                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.02)"}
                                             backdropFilter="blur(20px)"
-                                            border="1px solid rgba(255, 255, 255, 0.2)"
+                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
                                             borderRadius="2xl"
-                                            p={8}
+                                            p={{ base: 4, md: 8 }}
+                                            boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
                                         >
                                             <VStack spacing={6} align="start">
-                                                <HStack justify="space-between" w="full">
-                                                    <Heading size="lg" color="white">Profile Information</Heading>
+                                                <HStack justify="space-between" w="full" flexWrap="wrap" gap={4}>
+                                                    <Heading 
+                                                        size={{ base: 'md', md: 'lg' }} 
+                                                        color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                                    >
+                                                        Profile Information
+                                                    </Heading>
                                                     {isEditing && (
                                                         <Button
                                                             bg="linear-gradient(135deg, #970fff, #7817ff)"
                                                             color="white"
                                                             leftIcon={<FiSave />}
                                                             onClick={handleSaveProfile}
+                                                            size={{ base: 'sm', md: 'md' }}
                                                             _hover={{
                                                                 bg: 'linear-gradient(135deg, #7817ff, #5a0bd9)'
                                                             }}
@@ -431,56 +516,77 @@ const Profile: React.FC = () => {
 
                                                 <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={4} w="full">
                                                     <FormControl>
-                                                        <FormLabel color="white">First Name</FormLabel>
+                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>
+                                                            First Name
+                                                        </FormLabel>
                                                         <Input
                                                             value={profile.firstName}
                                                             onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
                                                             isReadOnly={!isEditing}
-                                                            bg="rgba(255, 255, 255, 0.1)"
-                                                            border="1px solid rgba(255, 255, 255, 0.2)"
-                                                            color="white"
+                                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.1)" : "white"}
+                                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'}`}
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.800'}
                                                             _readOnly={{ opacity: 0.7 }}
+                                                            _focus={{
+                                                                borderColor: 'brand.500',
+                                                                boxShadow: '0 0 0 1px #970fff'
+                                                            }}
                                                         />
                                                     </FormControl>
 
                                                     <FormControl>
-                                                        <FormLabel color="white">Last Name</FormLabel>
+                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>
+                                                            Last Name
+                                                        </FormLabel>
                                                         <Input
                                                             value={profile.lastName}
                                                             onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
                                                             isReadOnly={!isEditing}
-                                                            bg="rgba(255, 255, 255, 0.1)"
-                                                            border="1px solid rgba(255, 255, 255, 0.2)"
-                                                            color="white"
+                                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.1)" : "white"}
+                                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'}`}
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.800'}
                                                             _readOnly={{ opacity: 0.7 }}
+                                                            _focus={{
+                                                                borderColor: 'brand.500',
+                                                                boxShadow: '0 0 0 1px #970fff'
+                                                            }}
                                                         />
                                                     </FormControl>
                                                 </Grid>
 
                                                 <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={4} w="full">
                                                     <FormControl>
-                                                        <FormLabel color="white">Email</FormLabel>
+                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>
+                                                            Email
+                                                        </FormLabel>
                                                         <Input
                                                             value={profile.email}
                                                             onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                                                            isReadOnly={!isEditing}
-                                                            bg="rgba(255, 255, 255, 0.1)"
-                                                            border="1px solid rgba(255, 255, 255, 0.2)"
-                                                            color="white"
-                                                            _readOnly={{ opacity: 0.7 }}
+                                                            isReadOnly={true} // Email should typically not be editable
+                                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.05)" : "gray.50"}
+                                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`}
+                                                            color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}
+                                                            opacity={0.7}
                                                         />
                                                     </FormControl>
 
                                                     <FormControl>
-                                                        <FormLabel color="white">Phone</FormLabel>
+                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>
+                                                            Phone
+                                                        </FormLabel>
                                                         <Input
                                                             value={profile.phone}
                                                             onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                                                             isReadOnly={!isEditing}
-                                                            bg="rgba(255, 255, 255, 0.1)"
-                                                            border="1px solid rgba(255, 255, 255, 0.2)"
-                                                            color="white"
+                                                            placeholder="Enter phone number"
+                                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.1)" : "white"}
+                                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'}`}
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.800'}
                                                             _readOnly={{ opacity: 0.7 }}
+                                                            _focus={{
+                                                                borderColor: 'brand.500',
+                                                                boxShadow: '0 0 0 1px #970fff'
+                                                            }}
                                                         />
                                                     </FormControl>
                                                 </Grid>
