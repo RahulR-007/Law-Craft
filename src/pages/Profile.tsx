@@ -159,7 +159,6 @@ const Profile: React.FC = () => {
             })
             setIsEditing(false)
         } catch (error) {
-            console.error('Profile update error:', error)
             toast({
                 title: 'Update Failed',
                 description: 'There was an error updating your profile.',
@@ -198,7 +197,7 @@ const Profile: React.FC = () => {
     const stats = [
         {
             label: 'Documents Generated',
-            value: '0', // TODO: This will come from user usage data
+            value: '0', // Will come from user usage data
             change: '+0%',
             isIncrease: true,
             icon: FiFileText

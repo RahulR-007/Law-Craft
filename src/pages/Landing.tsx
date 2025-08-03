@@ -6,7 +6,6 @@ import {
   Text,
   Button,
   Flex,
-  Image,
   VStack,
   HStack,
   Grid,
@@ -23,9 +22,7 @@ import {
   FiUsers,
   FiZap,
   FiStar,
-  FiTrendingUp,
   FiGlobe,
-  FiClock,
   FiAward
 } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
@@ -1095,7 +1092,7 @@ const Header: React.FC = () => {
 }
 
 // Main Landing Component
-export const Landing: React.FC = () => {
+const Landing: React.FC = () => {
   const [activeSection, setActiveSection] = useState(1)
 
   const handleNavigate = (section: number) => {
@@ -1205,3 +1202,5 @@ export const Landing: React.FC = () => {
     </Box>
   )
 }
+
+export default Landing

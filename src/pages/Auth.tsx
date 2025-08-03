@@ -21,7 +21,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 const MotionBox = motion(Box)
 
-export const AuthPage: React.FC = () => {
+const AuthPage: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false)
   const [formData, setFormData] = useState({
     fullname: '',
@@ -317,3 +317,5 @@ export const AuthPage: React.FC = () => {
     </Box>
   )
 }
+
+export default AuthPage

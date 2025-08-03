@@ -27,7 +27,6 @@ import {
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
 import { FiDownload, FiSend } from 'react-icons/fi'
 import Navigation from '../components/Navigation'
 
@@ -35,7 +34,6 @@ const MotionBox = motion(Box)
 
 const DocumentGenerator: React.FC = () => {
   const { user } = useAuth()
-  const navigate = useNavigate()
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { colorMode } = useColorMode()

@@ -7,10 +7,10 @@ import theme from './theme.new'
 import './App.css'
 
 // Lazy load components for code splitting
-const Landing = React.lazy(() => import('./pages/Landing').then(module => ({ default: module.Landing })))
-const AuthPage = React.lazy(() => import('./pages/Auth').then(module => ({ default: module.AuthPage })))
-const Dashboard = React.lazy(() => import('./pages/Dashboard').then(module => ({ default: module.Dashboard })))
-const DocumentGenerator = React.lazy(() => import('./pages/DocumentGenerator').then(module => ({ default: module.DocumentGenerator })))
+const Landing = React.lazy(() => import('./pages/Landing'))
+const AuthPage = React.lazy(() => import('./pages/Auth'))
+const Dashboard = React.lazy(() => import('./pages/Dashboard'))
+const DocumentGenerator = React.lazy(() => import('./pages/DocumentGenerator'))
 const Pricing = React.lazy(() => import('./pages/Pricing'))
 const Help = React.lazy(() => import('./pages/Help'))
 const Profile = React.lazy(() => import('./pages/Profile'))

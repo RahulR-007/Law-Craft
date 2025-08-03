@@ -111,7 +111,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setUser(session.user as User)
       }
     } catch (error) {
-      console.error('Error updating user:', error)
       throw error
     }
   }
