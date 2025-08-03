@@ -113,8 +113,17 @@ const Profile: React.FC = () => {
 
     // Update color mode when theme setting changes
     useEffect(() => {
-        if (settings.theme !== colorMode) {
-            setColorMode(settings.theme)
+        if (settings.theme === 'light' || settings.theme === 'dark') {
+            if (settings.theme !== colorMode) {
+                setColorMode(settings.theme)
+            }
+        } else if (settings.theme === 'auto') {
+            // Detect system preference
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+            const autoTheme = systemPrefersDark ? 'dark' : 'light'
+            if (autoTheme !== colorMode) {
+                setColorMode(autoTheme)
+            }
         }
     }, [settings.theme, colorMode, setColorMode])
 
@@ -589,6 +598,11 @@ const Profile: React.FC = () => {
                                                                 // Immediately apply theme change
                                                                 if (newTheme === 'light' || newTheme === 'dark') {
                                                                     setColorMode(newTheme)
+                                                                } else if (newTheme === 'auto') {
+                                                                    // Detect system preference and apply
+                                                                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+                                                                    const autoTheme = systemPrefersDark ? 'dark' : 'light'
+                                                                    setColorMode(autoTheme)
                                                                 }
                                                             }}
                                                             bg="rgba(255, 255, 255, 0.1)"
