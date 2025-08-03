@@ -1,6 +1,12 @@
-# LawCraft - React Modernization
+# LawCraft AI - Legal Document Generation Platform
 
-A modern React-based legal document generation platform, converted from the original PHP/HTML/CSS/JavaScript implementation.
+A modern React-based legal document generation platform with AI-powered document creation capabilities.
+
+## 🔒 LICENSE & COPYRIGHT
+
+**⚠️ PROPRIETARY SOFTWARE - ALL RIGHTS RESERVED**
+
+This software is proprietary and confidential to RahulR-007. Unauthorized copying, distribution, modification, or use is strictly prohibited and may result in severe civil and criminal penalties. See LICENSE file for complete terms.
 
 ## 🚀 Features
 

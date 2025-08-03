@@ -3,6 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "license": "PROPRIETARY",
+  "author": "RahulR-007",
+  "description": "LawCraft AI - Proprietary legal document generation platform",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
