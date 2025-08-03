@@ -392,28 +392,7 @@ const IntroSection: React.FC<SectionProps> = ({ isActive }) => {
           </GridItem>
         </Grid>
 
-        {/* Statistics or features bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-          style={{ marginTop: '80px' }}
-        >
-          <Grid templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }} gap={8}>
-            {[
-              { label: 'Documents Created', value: '10K+', icon: FiFileText },
-              { label: 'Happy Clients', value: '5K+', icon: FiUsers },
-              { label: 'Success Rate', value: '99%', icon: FiTrendingUp },
-              { label: 'Time Saved', value: '80%', icon: FiClock }
-            ].map((stat, index) => (
-              <VStack key={index} spacing={2}>
-                <Icon as={stat.icon} color="#970fff" w={8} h={8} />
-                <Text fontSize="2xl" fontWeight="bold" color="white">{stat.value}</Text>
-                <Text fontSize="sm" color="gray.400" textAlign="center">{stat.label}</Text>
-              </VStack>
-            ))}
-          </Grid>
-        </motion.div>
+
       </Container>
     </MotionBox>
   )
@@ -427,17 +406,20 @@ const WorkSection: React.FC<SectionProps> = ({ isActive }) => {
     {
       title: "Loan Agreement",
       description: "Create comprehensive loan agreements with AI assistance",
-      image: "/assets/img/loan.svg"
+      image: "/assets/img/loan.svg",
+      icon: FiFileText
     },
     {
-      title: "Contract Agreement",
+      title: "Contract Agreement", 
       description: "Generate professional contracts tailored to your needs",
-      image: "/assets/img/contract.svg"
+      image: "/assets/img/contract.svg",
+      icon: FiFileText
     },
     {
       title: "Non-disclosure Agreement",
-      description: "Protect your confidential information with NDAs",
-      image: "/assets/img/nda.svg"
+      description: "Protect your confidential information with NDAs", 
+      image: "/assets/img/nda.svg",
+      icon: FiShield
     }
   ]
 
@@ -536,12 +518,11 @@ const WorkSection: React.FC<SectionProps> = ({ isActive }) => {
                         pointerEvents: 'none',
                       }}
                     >
-                      <Image
-                        src={doc.image}
-                        alt={doc.title}
-                        w="80px"
-                        h="80px"
-                        filter="brightness(0) invert(1)"
+                      <Icon 
+                        as={doc.icon}
+                        w="50px"
+                        h="50px"
+                        color="white"
                       />
                     </Box>
                     <VStack spacing={2}>
@@ -766,48 +747,6 @@ const AboutSection: React.FC<SectionProps> = ({ isActive }) => {
               transition={{ duration: 0.8, delay: 0.4 }}
             >
               <VStack spacing={8} textAlign="center">
-                <Box
-                  p={8}
-                  borderRadius="2xl"
-                  bg="rgba(255, 255, 255, 0.05)"
-                  backdropFilter="blur(20px)"
-                  border="1px solid rgba(255, 255, 255, 0.1)"
-                  position="relative"
-                  overflow="hidden"
-                >
-                  <Text
-                    fontSize="lg"
-                    color="white"
-                    lineHeight="1.8"
-                    fontStyle="italic"
-                  >
-                    "LawCraft has revolutionized how we handle legal documentation.
-                    What used to take days now takes minutes, and the quality is exceptional.
-                    It's like having a legal expert at your fingertips 24/7."
-                  </Text>
-
-                  <HStack spacing={4} mt={6} justify="center">
-                    <Box
-                      w="50px"
-                      h="50px"
-                      borderRadius="50%"
-                      bg="linear-gradient(135deg, #970fff, #7817ff)"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      color="white"
-                      fontWeight="bold"
-                      fontSize="lg"
-                    >
-                      JS
-                    </Box>
-                    <VStack align="start" spacing={0}>
-                      <Text color="white" fontWeight="bold">John Smith</Text>
-                      <Text color="gray.400" fontSize="sm">Corporate Lawyer</Text>
-                    </VStack>
-                  </HStack>
-                </Box>
-
                 <HStack spacing={4}>
                   <Button
                     size="lg"
@@ -914,7 +853,7 @@ const ContactSection: React.FC<SectionProps> = ({ isActive }) => {
             animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <Grid templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }} gap={8} mb={12}>
+            <Grid templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }} gap={8} mb={12}>
               {[
                 {
                   icon: FiMail,
@@ -925,13 +864,13 @@ const ContactSection: React.FC<SectionProps> = ({ isActive }) => {
                 {
                   icon: FiFileText,
                   title: 'Documentation',
-                  description: 'Comprehensive user guides',
+                  description: 'Comprehensive guides',
                   action: () => navigate('/help')
                 },
                 {
                   icon: FiUsers,
                   title: 'Community',
-                  description: 'Join our user community',
+                  description: 'Join our community',
                   action: () => window.open('https://community.lawcraft.com', '_blank')
                 }
               ].map((contact, index) => (
@@ -1003,7 +942,7 @@ const ContactSection: React.FC<SectionProps> = ({ isActive }) => {
                   }}
                   _active={{ transform: "translateY(0)" }}
                 >
-                  Start Free Trial
+                  Get Started
                 </Button>
 
                 <Button
@@ -1026,7 +965,7 @@ const ContactSection: React.FC<SectionProps> = ({ isActive }) => {
               </HStack>
 
               <Text fontSize="sm" color="gray.500" textAlign="center">
-                No credit card required • 7-day free trial • Cancel anytime
+                Join thousands of professionals • Secure & reliable
               </Text>
             </VStack>
           </motion.div>

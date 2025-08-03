@@ -593,42 +593,57 @@ const Profile: React.FC = () => {
 
                                                 <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={4} w="full">
                                                     <FormControl>
-                                                        <FormLabel color="white">Company</FormLabel>
+                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>Company</FormLabel>
                                                         <Input
                                                             value={profile.company}
                                                             onChange={(e) => setProfile({ ...profile, company: e.target.value })}
                                                             isReadOnly={!isEditing}
-                                                            bg="rgba(255, 255, 255, 0.1)"
-                                                            border="1px solid rgba(255, 255, 255, 0.2)"
-                                                            color="white"
+                                                            placeholder="Enter company name"
+                                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.1)" : "white"}
+                                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'}`}
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.800'}
                                                             _readOnly={{ opacity: 0.7 }}
+                                                            _focus={{
+                                                                borderColor: 'brand.500',
+                                                                boxShadow: '0 0 0 1px #970fff'
+                                                            }}
                                                         />
                                                     </FormControl>
 
                                                     <FormControl>
-                                                        <FormLabel color="white">Position</FormLabel>
+                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>Position</FormLabel>
                                                         <Input
                                                             value={profile.position}
                                                             onChange={(e) => setProfile({ ...profile, position: e.target.value })}
                                                             isReadOnly={!isEditing}
-                                                            bg="rgba(255, 255, 255, 0.1)"
-                                                            border="1px solid rgba(255, 255, 255, 0.2)"
-                                                            color="white"
+                                                            placeholder="Enter position"
+                                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.1)" : "white"}
+                                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'}`}
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.800'}
                                                             _readOnly={{ opacity: 0.7 }}
+                                                            _focus={{
+                                                                borderColor: 'brand.500',
+                                                                boxShadow: '0 0 0 1px #970fff'
+                                                            }}
                                                         />
                                                     </FormControl>
                                                 </Grid>
 
                                                 <FormControl>
-                                                    <FormLabel color="white">Location</FormLabel>
+                                                    <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>Location</FormLabel>
                                                     <Input
                                                         value={profile.location}
                                                         onChange={(e) => setProfile({ ...profile, location: e.target.value })}
                                                         isReadOnly={!isEditing}
-                                                        bg="rgba(255, 255, 255, 0.1)"
-                                                        border="1px solid rgba(255, 255, 255, 0.2)"
-                                                        color="white"
+                                                        placeholder="Enter location"
+                                                        bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.1)" : "white"}
+                                                        border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'}`}
+                                                        color={colorMode === 'dark' ? 'white' : 'gray.800'}
                                                         _readOnly={{ opacity: 0.7 }}
+                                                        _focus={{
+                                                            borderColor: 'brand.500',
+                                                            boxShadow: '0 0 0 1px #970fff'
+                                                        }}
                                                     />
                                                 </FormControl>
                                             </VStack>
@@ -642,14 +657,15 @@ const Profile: React.FC = () => {
                                 <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr' }} gap={8}>
                                     <GridItem>
                                         <Card
-                                            bg="rgba(255, 255, 255, 0.08)"
+                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.02)"}
                                             backdropFilter="blur(20px)"
-                                            border="1px solid rgba(255, 255, 255, 0.2)"
+                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
                                             borderRadius="2xl"
                                             p={8}
+                                            boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
                                         >
                                             <VStack spacing={6} align="start">
-                                                <Heading size="lg" color="white">Notifications</Heading>
+                                                <Heading size="lg" color={colorMode === 'dark' ? 'white' : 'gray.800'}>Notifications</Heading>
 
                                                 <VStack spacing={4} w="full">
                                                     {[
@@ -664,7 +680,7 @@ const Profile: React.FC = () => {
                                                             <Flex key={setting.key} justify="space-between" align="center" w="full">
                                                                 <HStack spacing={3}>
                                                                     <IconComponent color="#970fff" />
-                                                                    <Text color="white">{setting.label}</Text>
+                                                                    <Text color={colorMode === 'dark' ? 'white' : 'gray.800'}>{setting.label}</Text>
                                                                 </HStack>
                                                                 <Switch
                                                                     isChecked={settings[setting.key as keyof typeof settings] as boolean}
@@ -684,18 +700,19 @@ const Profile: React.FC = () => {
 
                                     <GridItem>
                                         <Card
-                                            bg="rgba(255, 255, 255, 0.08)"
+                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.02)"}
                                             backdropFilter="blur(20px)"
-                                            border="1px solid rgba(255, 255, 255, 0.2)"
+                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
                                             borderRadius="2xl"
                                             p={8}
+                                            boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
                                         >
                                             <VStack spacing={6} align="start">
-                                                <Heading size="lg" color="white">Preferences</Heading>
+                                                <Heading size="lg" color={colorMode === 'dark' ? 'white' : 'gray.800'}>Preferences</Heading>
 
                                                 <VStack spacing={4} w="full">
                                                     <FormControl>
-                                                        <FormLabel color="white">Theme</FormLabel>
+                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>Theme</FormLabel>
                                                         <Select
                                                             value={settings.theme}
                                                             onChange={(e) => {
@@ -711,45 +728,45 @@ const Profile: React.FC = () => {
                                                                     setColorMode(autoTheme)
                                                                 }
                                                             }}
-                                                            bg="rgba(255, 255, 255, 0.1)"
-                                                            border="1px solid rgba(255, 255, 255, 0.2)"
-                                                            color="white"
+                                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.1)" : "white"}
+                                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'}`}
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.800'}
                                                         >
-                                                            <option value="dark" style={{ background: '#1a1a1a' }}>Dark</option>
-                                                            <option value="light" style={{ background: '#1a1a1a' }}>Light</option>
-                                                            <option value="auto" style={{ background: '#1a1a1a' }}>Auto</option>
+                                                            <option value="dark" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>Dark</option>
+                                                            <option value="light" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>Light</option>
+                                                            <option value="auto" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>Auto</option>
                                                         </Select>
                                                     </FormControl>
 
                                                     <FormControl>
-                                                        <FormLabel color="white">Language</FormLabel>
+                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>Language</FormLabel>
                                                         <Select
                                                             value={settings.language}
                                                             onChange={(e) => setSettings({ ...settings, language: e.target.value })}
-                                                            bg="rgba(255, 255, 255, 0.1)"
-                                                            border="1px solid rgba(255, 255, 255, 0.2)"
-                                                            color="white"
+                                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.1)" : "white"}
+                                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'}`}
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.800'}
                                                         >
-                                                            <option value="en" style={{ background: '#1a1a1a' }}>English</option>
-                                                            <option value="es" style={{ background: '#1a1a1a' }}>Spanish</option>
-                                                            <option value="fr" style={{ background: '#1a1a1a' }}>French</option>
-                                                            <option value="de" style={{ background: '#1a1a1a' }}>German</option>
+                                                            <option value="en" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>English</option>
+                                                            <option value="es" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>Spanish</option>
+                                                            <option value="fr" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>French</option>
+                                                            <option value="de" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>German</option>
                                                         </Select>
                                                     </FormControl>
 
                                                     <FormControl>
-                                                        <FormLabel color="white">Timezone</FormLabel>
+                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>Timezone</FormLabel>
                                                         <Select
                                                             value={settings.timezone}
                                                             onChange={(e) => setSettings({ ...settings, timezone: e.target.value })}
-                                                            bg="rgba(255, 255, 255, 0.1)"
-                                                            border="1px solid rgba(255, 255, 255, 0.2)"
-                                                            color="white"
+                                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.1)" : "white"}
+                                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'}`}
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.800'}
                                                         >
-                                                            <option value="America/New_York" style={{ background: '#1a1a1a' }}>Eastern Time</option>
-                                                            <option value="America/Chicago" style={{ background: '#1a1a1a' }}>Central Time</option>
-                                                            <option value="America/Denver" style={{ background: '#1a1a1a' }}>Mountain Time</option>
-                                                            <option value="America/Los_Angeles" style={{ background: '#1a1a1a' }}>Pacific Time</option>
+                                                            <option value="America/New_York" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>Eastern Time</option>
+                                                            <option value="America/Chicago" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>Central Time</option>
+                                                            <option value="America/Denver" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>Mountain Time</option>
+                                                            <option value="America/Los_Angeles" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>Pacific Time</option>
                                                         </Select>
                                                     </FormControl>
                                                 </VStack>
@@ -782,11 +799,12 @@ const Profile: React.FC = () => {
                                             return (
                                                 <Card
                                                     key={index}
-                                                    bg="rgba(255, 255, 255, 0.08)"
+                                                    bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.02)"}
                                                     backdropFilter="blur(20px)"
-                                                    border="1px solid rgba(255, 255, 255, 0.2)"
+                                                    border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
                                                     borderRadius="xl"
                                                     p={6}
+                                                    boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
                                                 >
                                                     <Stat>
                                                         <Flex justify="space-between" align="start" mb={2}>
@@ -802,10 +820,10 @@ const Profile: React.FC = () => {
                                                                 <IconComponent size={16} color="#970fff" />
                                                             </Box>
                                                         </Flex>
-                                                        <StatNumber color="white" fontSize="2xl" fontWeight="bold">
+                                                        <StatNumber color={colorMode === 'dark' ? 'white' : 'gray.800'} fontSize="2xl" fontWeight="bold">
                                                             {stat.value}
                                                         </StatNumber>
-                                                        <StatHelpText color="gray.400" mb={0}>
+                                                        <StatHelpText color={colorMode === 'dark' ? 'gray.400' : 'gray.600'} mb={0}>
                                                             <StatArrow type={stat.isIncrease ? 'increase' : 'decrease'} />
                                                             {stat.change}
                                                         </StatHelpText>
@@ -817,15 +835,16 @@ const Profile: React.FC = () => {
 
                                     {/* Recent Activity */}
                                     <Card
-                                        bg="rgba(255, 255, 255, 0.08)"
+                                        bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.02)"}
                                         backdropFilter="blur(20px)"
-                                        border="1px solid rgba(255, 255, 255, 0.2)"
+                                        border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
                                         borderRadius="2xl"
                                         p={8}
                                         w="full"
+                                        boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
                                     >
                                         <VStack spacing={6} align="start">
-                                            <Heading size="lg" color="white">Recent Activity</Heading>
+                                            <Heading size="lg" color={colorMode === 'dark' ? 'white' : 'gray.800'}>Recent Activity</Heading>
 
                                             <VStack spacing={4} w="full">
                                                 {recentActivity.map((activity) => (
@@ -835,9 +854,9 @@ const Profile: React.FC = () => {
                                                         align="center"
                                                         w="full"
                                                         p={4}
-                                                        bg="rgba(255, 255, 255, 0.05)"
+                                                        bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.02)"}
                                                         borderRadius="lg"
-                                                        border="1px solid rgba(255, 255, 255, 0.1)"
+                                                        border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`}
                                                     >
                                                         <HStack spacing={4}>
                                                             <Box
@@ -849,10 +868,10 @@ const Profile: React.FC = () => {
                                                                 <FiFileText size={16} color="#970fff" />
                                                             </Box>
                                                             <VStack align="start" spacing={0}>
-                                                                <Text color="white" fontWeight="medium">
+                                                                <Text color={colorMode === 'dark' ? 'white' : 'gray.800'} fontWeight="medium">
                                                                     {activity.title}
                                                                 </Text>
-                                                                <Text color="gray.400" fontSize="sm">
+                                                                <Text color={colorMode === 'dark' ? 'gray.400' : 'gray.600'} fontSize="sm">
                                                                     {activity.timestamp}
                                                                 </Text>
                                                             </VStack>
