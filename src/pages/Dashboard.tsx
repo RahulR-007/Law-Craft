@@ -9,12 +9,12 @@ import {
   HStack,
   Flex,
   useColorMode,
+  IconButton
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { FiFileText } from 'react-icons/fi'
+import { FiFileText, FiUser } from 'react-icons/fi'
 import Chatbot from '../components/Chatbot'
-import Navigation from '../components/Navigation'
 
 const MotionBox = motion(Box)
 
@@ -29,7 +29,7 @@ const Dashboard: React.FC = () => {
   return (
     <Box
       minH="100vh"
-      bg={colorMode === 'dark' ? 
+      bg={colorMode === 'dark' ?
         "linear-gradient(135deg, rgba(12, 12, 12, 0.95) 0%, rgba(26, 10, 46, 0.9) 50%, rgba(22, 33, 62, 0.85) 100%)" :
         "linear-gradient(135deg, rgba(248, 248, 248, 0.95) 0%, rgba(230, 220, 255, 0.9) 50%, rgba(220, 235, 255, 0.85) 100%)"
       }
@@ -41,13 +41,51 @@ const Dashboard: React.FC = () => {
         left: 0,
         right: 0,
         bottom: 0,
-        background: colorMode === 'dark' ? 
+        background: colorMode === 'dark' ?
           'radial-gradient(circle at 20% 30%, rgba(151, 15, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(151, 15, 255, 0.08) 0%, transparent 50%)' :
           'radial-gradient(circle at 20% 30%, rgba(151, 15, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(151, 15, 255, 0.03) 0%, transparent 50%)',
         pointerEvents: 'none',
       }}
     >
-      <Navigation currentPage="dashboard" />
+      {/* Navigation */}
+      <Flex
+        position="fixed"
+        top="0"
+        left="0"
+        right="0"
+        h="70px"
+        bg={colorMode === 'dark' ? "rgba(0, 0, 0, 0.9)" : "rgba(255, 255, 255, 0.9)"}
+        backdropFilter="blur(20px)"
+        border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`}
+        align="center"
+        justify="space-between"
+        px={8}
+        zIndex="1000"
+        boxShadow={colorMode === 'dark' ? "0 8px 20px rgba(0, 0, 0, 0.3)" : "0 8px 20px rgba(0, 0, 0, 0.1)"}
+        transition="all 0.3s ease"
+      >
+        <Text
+          fontSize="2xl"
+          fontWeight="bold"
+          color={colorMode === 'dark' ? 'white' : 'gray.800'}
+          cursor="pointer"
+          onClick={() => navigate('/dashboard')}
+        >
+          Law<Text as="span" color="brand.500">Craft</Text> AI
+        </Text>
+        <HStack spacing={4}>
+          <IconButton
+            aria-label="Profile"
+            icon={<FiUser />}
+            variant="ghost"
+            color={colorMode === 'dark' ? 'white' : 'gray.600'}
+            onClick={() => navigate('/profile')}
+            _hover={{
+              bg: colorMode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+            }}
+          />
+        </HStack>
+      </Flex>
 
       {/* Enhanced liquid glass background effects */}
       <Box
@@ -87,7 +125,7 @@ const Dashboard: React.FC = () => {
         backdropFilter="blur(15px)"
       />
 
-      <Container maxW="6xl" pt={20}>
+      <Container maxW="6xl" pt="100px">
         <MotionBox
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -183,7 +221,7 @@ const Dashboard: React.FC = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
-                    boxShadow={colorMode === 'dark' ? 
+                    boxShadow={colorMode === 'dark' ?
                       "0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)" :
                       "0 20px 40px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5)"
                     }

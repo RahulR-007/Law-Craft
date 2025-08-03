@@ -407,14 +407,14 @@ const WorkSection: React.FC<SectionProps> = ({ isActive }) => {
       icon: FiFileText
     },
     {
-      title: "Contract Agreement", 
+      title: "Contract Agreement",
       description: "Generate professional contracts tailored to your needs",
       image: "/assets/img/contract.svg",
       icon: FiFileText
     },
     {
       title: "Non-disclosure Agreement",
-      description: "Protect your confidential information with NDAs", 
+      description: "Protect your confidential information with NDAs",
       image: "/assets/img/nda.svg",
       icon: FiShield
     }
@@ -515,7 +515,7 @@ const WorkSection: React.FC<SectionProps> = ({ isActive }) => {
                         pointerEvents: 'none',
                       }}
                     >
-                      <Icon 
+                      <Icon
                         as={doc.icon}
                         w="50px"
                         h="50px"
