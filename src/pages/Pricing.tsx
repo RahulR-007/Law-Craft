@@ -16,15 +16,15 @@ import {
     ListItem,
     ListIcon,
     useToast,
-    IconButton,
     Spinner,
     Alert,
     AlertIcon,
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { FiCheck, FiStar, FiZap, FiAward, FiHome, FiArrowRight } from 'react-icons/fi'
+import { FiCheck, FiStar, FiZap, FiAward, FiArrowRight } from 'react-icons/fi'
 import { useAuth } from '../contexts/AuthContext'
+import FloatingNavigation from '../components/FloatingNavigation'
 
 // Declare Razorpay for TypeScript
 declare global {
@@ -231,37 +231,9 @@ const Pricing: React.FC = () => {
 
     return (
         <Box minH="100vh" position="relative">
-            {/* Navigation */}
-            <Flex
-                position="fixed"
-                top="0"
-                left="0"
-                right="0"
-                h="70px"
-                bg="rgba(0, 0, 0, 0.9)"
-                backdropFilter="blur(20px)"
-                border="1px solid rgba(255, 255, 255, 0.1)"
-                align="center"
-                justify="space-between"
-                px={8}
-                zIndex="1000"
-                boxShadow="0 8px 20px rgba(0, 0, 0, 0.3)"
-            >
-                <Text fontSize="2xl" fontWeight="bold" color="white">
-                    Law<Text as="span" color="brand.500">Craft</Text> AI
-                </Text>
-                <HStack spacing={4}>
-                    <IconButton
-                        aria-label="Home"
-                        icon={<FiHome />}
-                        variant="ghost"
-                        color="white"
-                        onClick={() => navigate('/dashboard')}
-                    />
-                </HStack>
-            </Flex>
+            <FloatingNavigation />
 
-            <Container maxW="7xl" pt="100px" pb="20px">
+            <Container maxW="7xl" pt="80px" pb="20px">
                 <MotionBox
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
