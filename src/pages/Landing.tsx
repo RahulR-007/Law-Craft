@@ -15,12 +15,12 @@ import {
   useBreakpointValue
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
-import { 
-  FiArrowRight, 
-  FiMail, 
-  FiShield, 
-  FiFileText, 
-  FiUsers, 
+import {
+  FiArrowRight,
+  FiMail,
+  FiShield,
+  FiFileText,
+  FiUsers,
   FiZap,
   FiStar,
   FiTrendingUp,
@@ -216,7 +216,7 @@ const IntroSection: React.FC<SectionProps> = ({ isActive }) => {
       }}
     >
       <FloatingElements />
-      
+
       <Container maxW="1200px" textAlign="center">
         <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr' }} gap={12} alignItems="center">
           {/* Left side - Text content */}
@@ -260,7 +260,7 @@ const IntroSection: React.FC<SectionProps> = ({ isActive }) => {
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
                 <Text fontSize="xl" color="gray.300" maxW="500px" mb={8}>
-                  Harness the power of AI to create professional legal documents in minutes. 
+                  Harness the power of AI to create professional legal documents in minutes.
                   From contracts to NDAs, we make legal documentation accessible to everyone.
                 </Text>
 
@@ -781,11 +781,11 @@ const AboutSection: React.FC<SectionProps> = ({ isActive }) => {
                     lineHeight="1.8"
                     fontStyle="italic"
                   >
-                    "LawCraft has revolutionized how we handle legal documentation. 
-                    What used to take days now takes minutes, and the quality is exceptional. 
+                    "LawCraft has revolutionized how we handle legal documentation.
+                    What used to take days now takes minutes, and the quality is exceptional.
                     It's like having a legal expert at your fingertips 24/7."
                   </Text>
-                  
+
                   <HStack spacing={4} mt={6} justify="center">
                     <Box
                       w="50px"
@@ -892,7 +892,7 @@ const ContactSection: React.FC<SectionProps> = ({ isActive }) => {
               color="white"
               mb={4}
             >
-              Ready to Transform Your 
+              Ready to Transform Your
               <br />
               <Text as="span" color="#970fff">Legal Workflow</Text>?
             </Heading>
@@ -903,7 +903,7 @@ const ContactSection: React.FC<SectionProps> = ({ isActive }) => {
               maxW="600px"
               mx="auto"
             >
-              Join thousands of legal professionals who trust LawCraft for their document creation needs. 
+              Join thousands of legal professionals who trust LawCraft for their document creation needs.
               Start your journey towards more efficient legal documentation today.
             </Text>
           </motion.div>
@@ -1139,7 +1139,7 @@ const Header: React.FC = () => {
         <Button
           bg="linear-gradient(135deg, #970fff, #7817ff)"
           color="white"
-          _hover={{ 
+          _hover={{
             bg: "linear-gradient(135deg, #7817ff, #5a0bd9)",
             transform: "translateY(-1px)"
           }}

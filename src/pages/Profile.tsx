@@ -92,7 +92,7 @@ const Profile: React.FC = () => {
         if (user) {
             const fullname = user.user_metadata?.fullname || ''
             const [firstName = '', lastName = ''] = fullname.split(' ')
-            
+
             setProfile(prev => ({
                 ...prev,
                 firstName,
@@ -147,7 +147,7 @@ const Profile: React.FC = () => {
                 location: profile.location,
                 bio: profile.bio
             }
-            
+
             await updateUser(updateData)
 
             toast({
@@ -176,7 +176,7 @@ const Profile: React.FC = () => {
             await updateUser({
                 settings: settings
             })
-            
+
             toast({
                 title: 'Settings Saved',
                 description: 'Your preferences have been saved successfully.',
@@ -258,8 +258,8 @@ const Profile: React.FC = () => {
     ]
 
     return (
-        <Box 
-            minH="100vh" 
+        <Box
+            minH="100vh"
             position="relative"
             bg={colorMode === 'dark' ? 'gray.900' : 'white'}
             color={colorMode === 'dark' ? 'white' : 'gray.800'}
@@ -282,9 +282,9 @@ const Profile: React.FC = () => {
                 boxShadow={colorMode === 'dark' ? "0 8px 20px rgba(0, 0, 0, 0.3)" : "0 8px 20px rgba(0, 0, 0, 0.1)"}
                 transition="all 0.3s ease"
             >
-                <Text 
-                    fontSize="2xl" 
-                    fontWeight="bold" 
+                <Text
+                    fontSize="2xl"
+                    fontWeight="bold"
                     color={colorMode === 'dark' ? 'white' : 'gray.800'}
                 >
                     Law<Text as="span" color="brand.500">Craft</Text> AI
@@ -319,9 +319,9 @@ const Profile: React.FC = () => {
                         >
                             Your <Text as="span" color="brand.500">Profile</Text>
                         </Heading>
-                        <Text 
+                        <Text
                             fontSize={{ base: 'md', md: 'xl' }}
-                            color={colorMode === 'dark' ? 'gray.400' : 'gray.600'} 
+                            color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}
                             maxW="2xl"
                             px={{ base: 4, md: 0 }}
                         >
@@ -340,11 +340,11 @@ const Profile: React.FC = () => {
                             flexWrap={{ base: 'wrap', md: 'nowrap' }}
                             gap={{ base: 2, md: 0 }}
                         >
-                            <Tab 
-                                color={colorMode === 'dark' ? 'gray.400' : 'gray.600'} 
-                                _selected={{ 
-                                    color: 'white', 
-                                    bg: 'linear-gradient(135deg, #970fff, #7817ff)' 
+                            <Tab
+                                color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}
+                                _selected={{
+                                    color: 'white',
+                                    bg: 'linear-gradient(135deg, #970fff, #7817ff)'
                                 }}
                             >
                                 <HStack spacing={2}>
@@ -352,11 +352,11 @@ const Profile: React.FC = () => {
                                     <Text>Profile</Text>
                                 </HStack>
                             </Tab>
-                            <Tab 
-                                color={colorMode === 'dark' ? 'gray.400' : 'gray.600'} 
-                                _selected={{ 
-                                    color: 'white', 
-                                    bg: 'linear-gradient(135deg, #970fff, #7817ff)' 
+                            <Tab
+                                color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}
+                                _selected={{
+                                    color: 'white',
+                                    bg: 'linear-gradient(135deg, #970fff, #7817ff)'
                                 }}
                             >
                                 <HStack spacing={2}>
@@ -364,11 +364,11 @@ const Profile: React.FC = () => {
                                     <Text>Settings</Text>
                                 </HStack>
                             </Tab>
-                            <Tab 
-                                color={colorMode === 'dark' ? 'gray.400' : 'gray.600'} 
-                                _selected={{ 
-                                    color: 'white', 
-                                    bg: 'linear-gradient(135deg, #970fff, #7817ff)' 
+                            <Tab
+                                color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}
+                                _selected={{
+                                    color: 'white',
+                                    bg: 'linear-gradient(135deg, #970fff, #7817ff)'
                                 }}
                             >
                                 <HStack spacing={2}>
@@ -402,8 +402,8 @@ const Profile: React.FC = () => {
                                                 />
 
                                                 <VStack spacing={2} textAlign="center">
-                                                    <Heading 
-                                                        size={{ base: 'md', md: 'lg' }} 
+                                                    <Heading
+                                                        size={{ base: 'md', md: 'lg' }}
                                                         color={colorMode === 'dark' ? 'white' : 'gray.800'}
                                                     >
                                                         {profile.firstName} {profile.lastName}
@@ -411,8 +411,8 @@ const Profile: React.FC = () => {
                                                     <Text color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}>
                                                         {profile.position}
                                                     </Text>
-                                                    <Text 
-                                                        color={colorMode === 'dark' ? 'gray.500' : 'gray.500'} 
+                                                    <Text
+                                                        color={colorMode === 'dark' ? 'gray.500' : 'gray.500'}
                                                         fontSize="sm"
                                                     >
                                                         {profile.company}
@@ -434,8 +434,8 @@ const Profile: React.FC = () => {
                                                 <VStack spacing={3} w="full" align="start">
                                                     <HStack spacing={3}>
                                                         <FiMail color="#970fff" />
-                                                        <Text 
-                                                            color={colorMode === 'dark' ? 'gray.300' : 'gray.600'} 
+                                                        <Text
+                                                            color={colorMode === 'dark' ? 'gray.300' : 'gray.600'}
                                                             fontSize="sm"
                                                             wordBreak="break-all"
                                                         >
@@ -444,8 +444,8 @@ const Profile: React.FC = () => {
                                                     </HStack>
                                                     <HStack spacing={3}>
                                                         <FiPhone color="#970fff" />
-                                                        <Text 
-                                                            color={colorMode === 'dark' ? 'gray.300' : 'gray.600'} 
+                                                        <Text
+                                                            color={colorMode === 'dark' ? 'gray.300' : 'gray.600'}
                                                             fontSize="sm"
                                                         >
                                                             {profile.phone || 'Not provided'}
@@ -453,8 +453,8 @@ const Profile: React.FC = () => {
                                                     </HStack>
                                                     <HStack spacing={3}>
                                                         <FiMapPin color="#970fff" />
-                                                        <Text 
-                                                            color={colorMode === 'dark' ? 'gray.300' : 'gray.600'} 
+                                                        <Text
+                                                            color={colorMode === 'dark' ? 'gray.300' : 'gray.600'}
                                                             fontSize="sm"
                                                         >
                                                             {profile.location || 'Not provided'}
@@ -492,8 +492,8 @@ const Profile: React.FC = () => {
                                         >
                                             <VStack spacing={6} align="start">
                                                 <HStack justify="space-between" w="full" flexWrap="wrap" gap={4}>
-                                                    <Heading 
-                                                        size={{ base: 'md', md: 'lg' }} 
+                                                    <Heading
+                                                        size={{ base: 'md', md: 'lg' }}
                                                         color={colorMode === 'dark' ? 'white' : 'gray.800'}
                                                     >
                                                         Profile Information
