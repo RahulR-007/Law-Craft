@@ -48,6 +48,11 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Database dumps / backups
+database_backup*.sql
+database_*.sql
+*.dump
+
 # Runtime data
 pids
 *.pid
