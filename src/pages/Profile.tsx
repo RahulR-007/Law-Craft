@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {
     Box,
-    Container,
     Heading,
     Text,
     Button,
@@ -16,6 +15,7 @@ import {
     Switch,
     useToast,
     useColorMode,
+    useBreakpointValue,
     Avatar,
     Badge,
     Divider,
@@ -35,6 +35,7 @@ import {
 import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
 import FloatingNavigation from '../components/FloatingNavigation'
+import { ResponsiveContainer } from '../components/ResponsiveContainer'
 import {
     FiUser,
     FiSettings,
@@ -58,7 +59,17 @@ const Profile: React.FC = () => {
     const { user, updateUser } = useAuth()
     const { colorMode, setColorMode } = useColorMode()
 
-    // Initialize profile with Supabase user data
+    // Responsive values
+    const headingSize = useBreakpointValue({ base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' })
+    const textSize = useBreakpointValue({ base: 'md', md: 'xl' })
+    const buttonSize = useBreakpointValue({ base: 'md', md: 'lg' })
+    const cardPadding = useBreakpointValue({ base: 4, md: 6, lg: 8 })
+    const tabSize = useBreakpointValue({ base: 'sm', md: 'md' })
+    const avatarSize = useBreakpointValue({ base: 'xl', md: '2xl' })
+    const gridColumns = useBreakpointValue({ base: '1fr', lg: '1fr 2fr' })
+    const flexDirection = useBreakpointValue({ base: 'column', md: 'row' }) as 'column' | 'row'
+
+    // Initialize profile with Firebase user data
     const [profile, setProfile] = useState({
         firstName: '',
         lastName: '',
@@ -131,7 +142,7 @@ const Profile: React.FC = () => {
 
     const handleSaveProfile = async () => {
         try {
-            // Update user metadata in Supabase with all profile fields
+            // Update user metadata in Firebase with all profile fields
             const fullname = `${profile.firstName} ${profile.lastName}`.trim()
             const updateData = {
                 // Keep existing metadata
@@ -168,7 +179,7 @@ const Profile: React.FC = () => {
 
     const handleSaveSettings = async () => {
         try {
-            // Save settings to Supabase user metadata
+            // Save settings to Firebase user metadata
             await updateUser({
                 settings: settings
             })
@@ -263,7 +274,7 @@ const Profile: React.FC = () => {
         >
             <FloatingNavigation />
 
-            <Container maxW="7xl" pt="80px" pb="20px" px={{ base: 4, md: 8 }}>
+            <ResponsiveContainer variant="page">
                 <MotionBox
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -272,7 +283,7 @@ const Profile: React.FC = () => {
                     {/* Header Section */}
                     <VStack spacing={8} textAlign="center" mb={12}>
                         <Heading
-                            fontSize={{ base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' }}
+                            fontSize={headingSize}
                             color={colorMode === 'dark' ? 'white' : 'gray.800'}
                             fontWeight="900"
                             lineHeight="shorter"
@@ -280,7 +291,7 @@ const Profile: React.FC = () => {
                             Your <Text as="span" color="brand.500">Profile</Text>
                         </Heading>
                         <Text
-                            fontSize={{ base: 'md', md: 'xl' }}
+                            fontSize={textSize}
                             color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}
                             maxW="2xl"
                             px={{ base: 4, md: 0 }}
@@ -289,7 +300,7 @@ const Profile: React.FC = () => {
                         </Text>
                     </VStack>
 
-                    <Tabs variant="soft-rounded" colorScheme="purple" size={{ base: 'sm', md: 'md' }}>
+                    <Tabs variant="soft-rounded" colorScheme="purple" size={tabSize}>
                         <TabList
                             bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.05)"}
                             backdropFilter="blur(10px)"
@@ -299,6 +310,7 @@ const Profile: React.FC = () => {
                             mb={8}
                             flexWrap={{ base: 'wrap', md: 'nowrap' }}
                             gap={{ base: 2, md: 0 }}
+                            justifyContent={{ base: 'center', md: 'flex-start' }}
                         >
                             <Tab
                                 color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}
@@ -306,6 +318,8 @@ const Profile: React.FC = () => {
                                     color: 'white',
                                     bg: 'linear-gradient(135deg, #970fff, #7817ff)'
                                 }}
+                                minW={{ base: '120px', md: 'auto' }}
+                                fontSize={{ base: 'sm', md: 'md' }}
                             >
                                 <HStack spacing={2}>
                                     <FiUser />
@@ -318,6 +332,8 @@ const Profile: React.FC = () => {
                                     color: 'white',
                                     bg: 'linear-gradient(135deg, #970fff, #7817ff)'
                                 }}
+                                minW={{ base: '120px', md: 'auto' }}
+                                fontSize={{ base: 'sm', md: 'md' }}
                             >
                                 <HStack spacing={2}>
                                     <FiSettings />
@@ -330,6 +346,8 @@ const Profile: React.FC = () => {
                                     color: 'white',
                                     bg: 'linear-gradient(135deg, #970fff, #7817ff)'
                                 }}
+                                minW={{ base: '120px', md: 'auto' }}
+                                fontSize={{ base: 'sm', md: 'md' }}
                             >
                                 <HStack spacing={2}>
                                     <FiActivity />
@@ -341,7 +359,7 @@ const Profile: React.FC = () => {
                         <TabPanels>
                             {/* Profile Tab */}
                             <TabPanel p={0}>
-                                <Grid templateColumns={{ base: '1fr', lg: '1fr 2fr' }} gap={8}>
+                                <Grid templateColumns={gridColumns} gap={8}>
                                     {/* Profile Card */}
                                     <GridItem>
                                         <Card
@@ -349,13 +367,13 @@ const Profile: React.FC = () => {
                                             backdropFilter="blur(20px)"
                                             border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
                                             borderRadius="2xl"
-                                            p={{ base: 4, md: 8 }}
+                                            p={cardPadding}
                                             h="fit-content"
                                             boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
                                         >
                                             <VStack spacing={6}>
                                                 <Avatar
-                                                    size={{ base: 'xl', md: '2xl' }}
+                                                    size={avatarSize}
                                                     name={`${profile.firstName} ${profile.lastName}`}
                                                     bg="linear-gradient(135deg, #970fff, #7817ff)"
                                                     color="white"
@@ -391,13 +409,16 @@ const Profile: React.FC = () => {
 
                                                 <Divider borderColor="rgba(255, 255, 255, 0.1)" />
 
-                                                <VStack spacing={3} w="full" align="start">
-                                                    <HStack spacing={3}>
+                                                <VStack spacing={3} w="full" align="start"
+                                                    overflowX="hidden" // Prevent horizontal scroll on mobile
+                                                >
+                                                    <HStack spacing={3} w="full" justify="flex-start">
                                                         <FiMail color="#970fff" />
                                                         <Text
                                                             color={colorMode === 'dark' ? 'gray.300' : 'gray.600'}
                                                             fontSize="sm"
                                                             wordBreak="break-all"
+                                                            noOfLines={2}
                                                         >
                                                             {profile.email}
                                                         </Text>
@@ -451,7 +472,13 @@ const Profile: React.FC = () => {
                                             boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
                                         >
                                             <VStack spacing={6} align="start">
-                                                <HStack justify="space-between" w="full" flexWrap="wrap" gap={4}>
+                                                <HStack
+                                                    justify="space-between"
+                                                    w="full"
+                                                    flexDirection={flexDirection}
+                                                    gap={4}
+                                                    align={{ base: 'stretch', md: 'center' }}
+                                                >
                                                     <Heading
                                                         size={{ base: 'md', md: 'lg' }}
                                                         color={colorMode === 'dark' ? 'white' : 'gray.800'}
@@ -464,7 +491,8 @@ const Profile: React.FC = () => {
                                                             color="white"
                                                             leftIcon={<FiSave />}
                                                             onClick={handleSaveProfile}
-                                                            size={{ base: 'sm', md: 'md' }}
+                                                            size={buttonSize}
+                                                            w={{ base: 'full', md: 'auto' }}
                                                             _hover={{
                                                                 bg: 'linear-gradient(135deg, #7817ff, #5a0bd9)'
                                                             }}
@@ -476,7 +504,10 @@ const Profile: React.FC = () => {
 
                                                 <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={4} w="full">
                                                     <FormControl>
-                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>
+                                                        <FormLabel
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.700'}
+                                                            fontSize={{ base: 'sm', md: 'md' }}
+                                                        >
                                                             First Name
                                                         </FormLabel>
                                                         <Input
@@ -491,11 +522,15 @@ const Profile: React.FC = () => {
                                                                 borderColor: 'brand.500',
                                                                 boxShadow: '0 0 0 1px #970fff'
                                                             }}
+                                                            size={{ base: 'md', md: 'lg' }}
                                                         />
                                                     </FormControl>
 
                                                     <FormControl>
-                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>
+                                                        <FormLabel
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.700'}
+                                                            fontSize={{ base: 'sm', md: 'md' }}
+                                                        >
                                                             Last Name
                                                         </FormLabel>
                                                         <Input
@@ -510,13 +545,17 @@ const Profile: React.FC = () => {
                                                                 borderColor: 'brand.500',
                                                                 boxShadow: '0 0 0 1px #970fff'
                                                             }}
+                                                            size={{ base: 'md', md: 'lg' }}
                                                         />
                                                     </FormControl>
                                                 </Grid>
 
                                                 <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={4} w="full">
                                                     <FormControl>
-                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>
+                                                        <FormLabel
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.700'}
+                                                            fontSize={{ base: 'sm', md: 'md' }}
+                                                        >
                                                             Email
                                                         </FormLabel>
                                                         <Input
@@ -527,11 +566,15 @@ const Profile: React.FC = () => {
                                                             border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`}
                                                             color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}
                                                             opacity={0.7}
+                                                            size={{ base: 'md', md: 'lg' }}
                                                         />
                                                     </FormControl>
 
                                                     <FormControl>
-                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>
+                                                        <FormLabel
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.700'}
+                                                            fontSize={{ base: 'sm', md: 'md' }}
+                                                        >
                                                             Phone
                                                         </FormLabel>
                                                         <Input
@@ -547,13 +590,19 @@ const Profile: React.FC = () => {
                                                                 borderColor: 'brand.500',
                                                                 boxShadow: '0 0 0 1px #970fff'
                                                             }}
+                                                            size={{ base: 'md', md: 'lg' }}
                                                         />
                                                     </FormControl>
                                                 </Grid>
 
                                                 <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={4} w="full">
                                                     <FormControl>
-                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>Company</FormLabel>
+                                                        <FormLabel
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.700'}
+                                                            fontSize={{ base: 'sm', md: 'md' }}
+                                                        >
+                                                            Company
+                                                        </FormLabel>
                                                         <Input
                                                             value={profile.company}
                                                             onChange={(e) => setProfile({ ...profile, company: e.target.value })}
@@ -567,11 +616,17 @@ const Profile: React.FC = () => {
                                                                 borderColor: 'brand.500',
                                                                 boxShadow: '0 0 0 1px #970fff'
                                                             }}
+                                                            size={{ base: 'md', md: 'lg' }}
                                                         />
                                                     </FormControl>
 
                                                     <FormControl>
-                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>Position</FormLabel>
+                                                        <FormLabel
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.700'}
+                                                            fontSize={{ base: 'sm', md: 'md' }}
+                                                        >
+                                                            Position
+                                                        </FormLabel>
                                                         <Input
                                                             value={profile.position}
                                                             onChange={(e) => setProfile({ ...profile, position: e.target.value })}
@@ -614,18 +669,23 @@ const Profile: React.FC = () => {
 
                             {/* Settings Tab */}
                             <TabPanel p={0}>
-                                <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr' }} gap={8}>
+                                <Grid templateColumns={gridColumns} gap={8}>
                                     <GridItem>
                                         <Card
                                             bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.02)"}
                                             backdropFilter="blur(20px)"
                                             border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
                                             borderRadius="2xl"
-                                            p={8}
+                                            p={cardPadding}
                                             boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
                                         >
                                             <VStack spacing={6} align="start">
-                                                <Heading size="lg" color={colorMode === 'dark' ? 'white' : 'gray.800'}>Notifications</Heading>
+                                                <Heading
+                                                    size={{ base: 'md', md: 'lg' }}
+                                                    color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                                >
+                                                    Notifications
+                                                </Heading>
 
                                                 <VStack spacing={4} w="full">
                                                     {[
@@ -637,10 +697,26 @@ const Profile: React.FC = () => {
                                                     ].map((setting) => {
                                                         const IconComponent = setting.icon
                                                         return (
-                                                            <Flex key={setting.key} justify="space-between" align="center" w="full">
-                                                                <HStack spacing={3}>
-                                                                    <IconComponent color="#970fff" />
-                                                                    <Text color={colorMode === 'dark' ? 'white' : 'gray.800'}>{setting.label}</Text>
+                                                            <Flex
+                                                                key={setting.key}
+                                                                justify="space-between"
+                                                                align="center"
+                                                                w="full"
+                                                                flexDirection={{ base: 'row', sm: 'row' }}
+                                                                gap={2}
+                                                            >
+                                                                <HStack spacing={3} flex="1" minW="0">
+                                                                    <IconComponent
+                                                                        color="#970fff"
+                                                                        size={18}
+                                                                    />
+                                                                    <Text
+                                                                        color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                                                        fontSize={{ base: 'sm', md: 'md' }}
+                                                                        noOfLines={1}
+                                                                    >
+                                                                        {setting.label}
+                                                                    </Text>
                                                                 </HStack>
                                                                 <Switch
                                                                     isChecked={settings[setting.key as keyof typeof settings] as boolean}
@@ -649,6 +725,7 @@ const Profile: React.FC = () => {
                                                                         [setting.key]: e.target.checked
                                                                     })}
                                                                     colorScheme="purple"
+                                                                    size={{ base: 'md', md: 'lg' }}
                                                                 />
                                                             </Flex>
                                                         )
@@ -664,15 +741,25 @@ const Profile: React.FC = () => {
                                             backdropFilter="blur(20px)"
                                             border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
                                             borderRadius="2xl"
-                                            p={8}
+                                            p={cardPadding}
                                             boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
                                         >
                                             <VStack spacing={6} align="start">
-                                                <Heading size="lg" color={colorMode === 'dark' ? 'white' : 'gray.800'}>Preferences</Heading>
+                                                <Heading
+                                                    size={{ base: 'md', md: 'lg' }}
+                                                    color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                                >
+                                                    Preferences
+                                                </Heading>
 
                                                 <VStack spacing={4} w="full">
                                                     <FormControl>
-                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>Theme</FormLabel>
+                                                        <FormLabel
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.700'}
+                                                            fontSize={{ base: 'sm', md: 'md' }}
+                                                        >
+                                                            Theme
+                                                        </FormLabel>
                                                         <Select
                                                             value={settings.theme}
                                                             onChange={(e) => {
@@ -691,6 +778,11 @@ const Profile: React.FC = () => {
                                                             bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.1)" : "white"}
                                                             border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'}`}
                                                             color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                                            _focus={{
+                                                                borderColor: 'brand.500',
+                                                                boxShadow: '0 0 0 1px #970fff'
+                                                            }}
+                                                            size={{ base: 'md', md: 'lg' }}
                                                         >
                                                             <option value="dark" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>Dark</option>
                                                             <option value="light" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>Light</option>
@@ -699,13 +791,23 @@ const Profile: React.FC = () => {
                                                     </FormControl>
 
                                                     <FormControl>
-                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>Language</FormLabel>
+                                                        <FormLabel
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.700'}
+                                                            fontSize={{ base: 'sm', md: 'md' }}
+                                                        >
+                                                            Language
+                                                        </FormLabel>
                                                         <Select
                                                             value={settings.language}
                                                             onChange={(e) => setSettings({ ...settings, language: e.target.value })}
                                                             bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.1)" : "white"}
                                                             border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'}`}
                                                             color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                                            _focus={{
+                                                                borderColor: 'brand.500',
+                                                                boxShadow: '0 0 0 1px #970fff'
+                                                            }}
+                                                            size={{ base: 'md', md: 'lg' }}
                                                         >
                                                             <option value="en" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>English</option>
                                                             <option value="es" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>Spanish</option>
@@ -715,13 +817,23 @@ const Profile: React.FC = () => {
                                                     </FormControl>
 
                                                     <FormControl>
-                                                        <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>Timezone</FormLabel>
+                                                        <FormLabel
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.700'}
+                                                            fontSize={{ base: 'sm', md: 'md' }}
+                                                        >
+                                                            Timezone
+                                                        </FormLabel>
                                                         <Select
                                                             value={settings.timezone}
                                                             onChange={(e) => setSettings({ ...settings, timezone: e.target.value })}
                                                             bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.1)" : "white"}
                                                             border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'}`}
                                                             color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                                            _focus={{
+                                                                borderColor: 'brand.500',
+                                                                boxShadow: '0 0 0 1px #970fff'
+                                                            }}
+                                                            size={{ base: 'md', md: 'lg' }}
                                                         >
                                                             <option value="America/New_York" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>Eastern Time</option>
                                                             <option value="America/Chicago" style={{ background: colorMode === 'dark' ? '#1a1a1a' : 'white', color: colorMode === 'dark' ? 'white' : 'black' }}>Central Time</option>
@@ -732,11 +844,12 @@ const Profile: React.FC = () => {
                                                 </VStack>
 
                                                 <Button
-                                                    w="full"
+                                                    w={{ base: 'full', md: 'auto' }}
                                                     bg="linear-gradient(135deg, #970fff, #7817ff)"
                                                     color="white"
                                                     leftIcon={<FiSave />}
                                                     onClick={handleSaveSettings}
+                                                    size={buttonSize}
                                                     _hover={{
                                                         bg: 'linear-gradient(135deg, #7817ff, #5a0bd9)'
                                                     }}
@@ -753,7 +866,11 @@ const Profile: React.FC = () => {
                             <TabPanel p={0}>
                                 <VStack spacing={8}>
                                     {/* Stats Cards */}
-                                    <Grid templateColumns={{ base: '1fr', sm: '1fr 1fr', lg: '1fr 1fr 1fr 1fr' }} gap={6} w="full">
+                                    <Grid
+                                        templateColumns={{ base: '1fr', sm: '1fr 1fr', lg: '1fr 1fr 1fr 1fr' }}
+                                        gap={{ base: 4, md: 6 }}
+                                        w="full"
+                                    >
                                         {stats.map((stat, index) => {
                                             const IconComponent = stat.icon
                                             return (
@@ -763,27 +880,42 @@ const Profile: React.FC = () => {
                                                     backdropFilter="blur(20px)"
                                                     border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
                                                     borderRadius="xl"
-                                                    p={6}
+                                                    p={{ base: 4, md: 6 }}
                                                     boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
                                                 >
                                                     <Stat>
                                                         <Flex justify="space-between" align="start" mb={2}>
-                                                            <StatLabel color="gray.400" fontSize="sm">
+                                                            <StatLabel
+                                                                color="gray.400"
+                                                                fontSize={{ base: 'xs', md: 'sm' }}
+                                                                noOfLines={2}
+                                                            >
                                                                 {stat.label}
                                                             </StatLabel>
                                                             <Box
                                                                 bg="rgba(151, 15, 255, 0.2)"
-                                                                p={2}
+                                                                p={{ base: 1.5, md: 2 }}
                                                                 borderRadius="lg"
                                                                 border="1px solid rgba(151, 15, 255, 0.3)"
+                                                                flexShrink={0}
                                                             >
                                                                 <IconComponent size={16} color="#970fff" />
                                                             </Box>
                                                         </Flex>
-                                                        <StatNumber color={colorMode === 'dark' ? 'white' : 'gray.800'} fontSize="2xl" fontWeight="bold">
+                                                        <StatNumber
+                                                            color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                                            fontSize={{ base: 'lg', md: '2xl' }}
+                                                            fontWeight="bold"
+                                                            noOfLines={1}
+                                                        >
                                                             {stat.value}
                                                         </StatNumber>
-                                                        <StatHelpText color={colorMode === 'dark' ? 'gray.400' : 'gray.600'} mb={0}>
+                                                        <StatHelpText
+                                                            color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}
+                                                            mb={0}
+                                                            fontSize={{ base: 'xs', md: 'sm' }}
+                                                            noOfLines={1}
+                                                        >
                                                             <StatArrow type={stat.isIncrease ? 'increase' : 'decrease'} />
                                                             {stat.change}
                                                         </StatHelpText>
@@ -799,49 +931,59 @@ const Profile: React.FC = () => {
                                         backdropFilter="blur(20px)"
                                         border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
                                         borderRadius="2xl"
-                                        p={8}
+                                        p={cardPadding}
                                         w="full"
                                         boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
                                     >
                                         <VStack spacing={6} align="start">
-                                            <Heading size="lg" color={colorMode === 'dark' ? 'white' : 'gray.800'}>Recent Activity</Heading>
+                                            <Heading
+                                                size={{ base: 'md', md: 'lg' }}
+                                                color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                            >
+                                                Recent Activity
+                                            </Heading>
 
                                             <VStack spacing={4} w="full">
                                                 {recentActivity.map((activity) => (
                                                     <Flex
                                                         key={activity.id}
                                                         justify="space-between"
-                                                        align="center"
+                                                        align={{ base: 'flex-start', md: 'center' }}
                                                         w="full"
-                                                        p={4}
+                                                        p={{ base: 3, md: 4 }}
                                                         bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.02)"}
                                                         borderRadius="lg"
-                                                        border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`}
+                                                        border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'}`}
+                                                        flexDirection={{ base: 'column', md: 'row' }}
+                                                        gap={{ base: 2, md: 0 }}
                                                     >
-                                                        <HStack spacing={4}>
-                                                            <Box
-                                                                bg="rgba(151, 15, 255, 0.2)"
-                                                                p={2}
-                                                                borderRadius="lg"
-                                                                border="1px solid rgba(151, 15, 255, 0.3)"
+                                                        <VStack spacing={1} align="start" flex="1">
+                                                            <Text
+                                                                color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                                                fontWeight="medium"
+                                                                fontSize={{ base: 'sm', md: 'md' }}
                                                             >
-                                                                <FiFileText size={16} color="#970fff" />
-                                                            </Box>
-                                                            <VStack align="start" spacing={0}>
-                                                                <Text color={colorMode === 'dark' ? 'white' : 'gray.800'} fontWeight="medium">
-                                                                    {activity.title}
-                                                                </Text>
-                                                                <Text color={colorMode === 'dark' ? 'gray.400' : 'gray.600'} fontSize="sm">
-                                                                    {activity.timestamp}
-                                                                </Text>
-                                                            </VStack>
-                                                        </HStack>
+                                                                {activity.title}
+                                                            </Text>
+                                                            <Text
+                                                                color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}
+                                                                fontSize={{ base: 'xs', md: 'sm' }}
+                                                            >
+                                                                {activity.timestamp}
+                                                            </Text>
+                                                        </VStack>
                                                         <Badge
-                                                            bg="rgba(34, 197, 94, 0.2)"
-                                                            color="green.300"
+                                                            colorScheme={
+                                                                activity.status === 'completed' ? 'green' :
+                                                                    activity.status === 'pending' ? 'yellow' :
+                                                                        'gray'
+                                                            }
+                                                            variant="subtle"
                                                             px={3}
                                                             py={1}
                                                             borderRadius="full"
+                                                            fontSize={{ base: 'xs', md: 'sm' }}
+                                                            alignSelf={{ base: 'flex-start', md: 'center' }}
                                                         >
                                                             {activity.status}
                                                         </Badge>
@@ -850,12 +992,28 @@ const Profile: React.FC = () => {
                                             </VStack>
                                         </VStack>
                                     </Card>
+
+                                    {/* Save Settings Button */}
+                                    <Button
+                                        bg="linear-gradient(135deg, #970fff, #7817ff)"
+                                        color="white"
+                                        leftIcon={<FiSave />}
+                                        onClick={handleSaveSettings}
+                                        size={buttonSize}
+                                        w={{ base: 'full', md: 'auto' }}
+                                        alignSelf={{ base: 'stretch', md: 'flex-start' }}
+                                        _hover={{
+                                            bg: 'linear-gradient(135deg, #7817ff, #5a0bd9)'
+                                        }}
+                                    >
+                                        Save Settings
+                                    </Button>
                                 </VStack>
                             </TabPanel>
                         </TabPanels>
                     </Tabs>
                 </MotionBox>
-            </Container>
+            </ResponsiveContainer>
         </Box>
     )
 }

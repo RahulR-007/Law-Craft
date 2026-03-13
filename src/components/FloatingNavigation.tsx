@@ -5,7 +5,8 @@ import {
     IconButton,
     Text,
     useColorMode,
-    Tooltip
+    Tooltip,
+    useBreakpointValue
 } from '@chakra-ui/react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -34,6 +35,14 @@ const FloatingNavigation: React.FC<FloatingNavProps> = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { signOut } = useAuth()
+
+    // Responsive values
+    const isMobile = useBreakpointValue({ base: true, md: false })
+    const navSize = useBreakpointValue({ base: 'sm', md: 'md' })
+    const collapsedWidth = useBreakpointValue({ base: 80, md: 120 })
+    const collapsedHeight = useBreakpointValue({ base: 30, md: 40 })
+    const topPosition = useBreakpointValue({ base: '15px', md: '30px' })
+    const spacing = useBreakpointValue({ base: 2, md: 4 })
 
     // Auto-collapse after inactivity
     useEffect(() => {
@@ -112,7 +121,7 @@ const FloatingNavigation: React.FC<FloatingNavProps> = () => {
     return (
         <MotionBox
             position="fixed"
-            top="30px"
+            top={topPosition}
             left="50%"
             transform="translateX(-50%)"
             zIndex="9999"
@@ -128,11 +137,11 @@ const FloatingNavigation: React.FC<FloatingNavProps> = () => {
                     // Expanded Dynamic Island
                     <MotionBox
                         key="expanded"
-                        initial={{ width: 120, height: 40, borderRadius: "20px" }}
+                        initial={{ width: collapsedWidth, height: collapsedHeight, borderRadius: "20px" }}
                         animate={{ width: 'auto', height: 'auto', borderRadius: "30px" }}
                         exit={{
-                            width: 120,
-                            height: 40,
+                            width: collapsedWidth,
+                            height: collapsedHeight,
                             borderRadius: "20px",
                             transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }
                         }}
@@ -147,10 +156,10 @@ const FloatingNavigation: React.FC<FloatingNavProps> = () => {
                         boxShadow="0 20px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(151, 15, 255, 0.3)"
                         overflow="hidden"
                     >
-                        <HStack spacing={4} p={4}>
+                        <HStack spacing={spacing} p={isMobile ? 2 : 4}>
                             {/* Left Navigation Items */}
                             <MotionHStack
-                                spacing={2}
+                                spacing={isMobile ? 1 : 2}
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{
@@ -170,7 +179,7 @@ const FloatingNavigation: React.FC<FloatingNavProps> = () => {
                                         <IconButton
                                             aria-label={item.label}
                                             icon={<item.icon />}
-                                            size="sm"
+                                            size={navSize}
                                             variant="ghost"
                                             borderRadius="full"
                                             color={item.isActive ?
@@ -213,13 +222,14 @@ const FloatingNavigation: React.FC<FloatingNavProps> = () => {
                                 mx={2}
                             >
                                 <Text
-                                    fontSize="sm"
+                                    fontSize={isMobile ? "xs" : "sm"}
                                     fontWeight="bold"
                                     color={colorMode === 'dark' ? 'white' : 'gray.800'}
                                     cursor="pointer"
                                     onClick={() => handleNavigation('/dashboard')}
                                     letterSpacing="0.5px"
                                     whiteSpace="nowrap"
+                                    display={isMobile ? 'none' : 'block'}
                                 >
                                     Law<Text as="span" color="brand.500">Craft</Text>
                                 </Text>
@@ -227,7 +237,7 @@ const FloatingNavigation: React.FC<FloatingNavProps> = () => {
 
                             {/* Right Navigation Items */}
                             <MotionHStack
-                                spacing={2}
+                                spacing={isMobile ? 1 : 2}
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{
@@ -247,7 +257,7 @@ const FloatingNavigation: React.FC<FloatingNavProps> = () => {
                                         <IconButton
                                             aria-label={item.label}
                                             icon={<item.icon />}
-                                            size="sm"
+                                            size={navSize}
                                             variant="ghost"
                                             borderRadius="full"
                                             color={item.isActive ?
@@ -283,7 +293,7 @@ const FloatingNavigation: React.FC<FloatingNavProps> = () => {
                                     <IconButton
                                         aria-label="Logout"
                                         icon={<FiLogOut />}
-                                        size="sm"
+                                        size={navSize}
                                         variant="ghost"
                                         borderRadius="full"
                                         color="red.400"
@@ -305,8 +315,8 @@ const FloatingNavigation: React.FC<FloatingNavProps> = () => {
                         key="collapsed"
                         initial={{ width: 'auto', height: 'auto', borderRadius: "30px", opacity: 0 }}
                         animate={{
-                            width: 120,
-                            height: 40,
+                            width: collapsedWidth,
+                            height: collapsedHeight,
                             borderRadius: "20px",
                             opacity: 1
                         }}
@@ -342,7 +352,7 @@ const FloatingNavigation: React.FC<FloatingNavProps> = () => {
                         <IconButton
                             aria-label={activeItem.label}
                             icon={<activeItem.icon />}
-                            size="sm"
+                            size={navSize}
                             variant="ghost"
                             borderRadius="full"
                             color="white"

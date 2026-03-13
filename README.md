@@ -12,7 +12,7 @@ This software is proprietary and confidential to RahulR-007. Unauthorized copyin
 
 ### ✅ Completed
 - **Modern Landing Page** with smooth scrolling sections (Home, Info, Pricing, Contact)
-- **Authentication System** with Supabase integration (Sign up/Sign in)
+- **Authentication System** with Firebase integration (Sign up/Sign in)
 - **Responsive Design** with black and purple theme matching original
 - **Dashboard** with user profile management
 - **React Router** for navigation
@@ -27,7 +27,7 @@ This software is proprietary and confidential to RahulR-007. Unauthorized copyin
 - **Help/Support** pages
 
 ### 📋 Todo
-- **Database Schema** setup in Supabase
+- **Database Schema** setup in Firebase
 - **Payment Integration** (Stripe/Razorpay)
 - **Email Templates** for verification
 - **Admin Dashboard** for user management
@@ -40,7 +40,7 @@ This software is proprietary and confidential to RahulR-007. Unauthorized copyin
 - **UI Library**: Chakra UI
 - **Animation**: Framer Motion
 - **Routing**: React Router Dom
-- **Backend**: Supabase (Database, Authentication, Storage)
+- **Backend**: Firebase (Database, Authentication, Storage)
 - **Build Tool**: Vite
 - **Styling**: CSS Modules + Chakra UI theme
 
@@ -67,8 +67,8 @@ docker run -p 80:80 law-craft
 
 ### Environment Variables Required
 ```bash
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_Firebase_URL=your_Firebase_project_url
+VITE_Firebase_ANON_KEY=your_Firebase_anon_key
 ```
 
 ### Build Optimization
@@ -118,7 +118,7 @@ Law-Craft/
 ### Prerequisites
 - Node.js 18+ 
 - npm or yarn
-- Supabase account (for backend)
+- Firebase account (for backend)
 
 ### Installation
 
@@ -136,7 +136,7 @@ Law-Craft/
 3. **Setup environment variables**
    ```bash
    cp .env.example .env
-   # Edit .env with your Supabase credentials
+   # Edit .env with your Firebase credentials
    ```
 
 4. **Start development server**
@@ -149,11 +149,11 @@ Law-Craft/
 
 ## 🔧 Configuration
 
-### Supabase Setup
+### Firebase Setup
 
-1. Create a new Supabase project
+1. Create a new Firebase project
 2. Copy your project URL and anon key to `.env`
-3. Set up authentication in Supabase dashboard
+3. Set up authentication in Firebase dashboard
 4. Create user profile table:
 
 ```sql
@@ -192,7 +192,7 @@ create policy "Users can update own profile"
 
 ### Authentication
 - **Sign up/Sign in** with email and password
-- **Email verification** (configured in Supabase)
+- **Email verification** (configured in Firebase)
 - **User profile** with plan and token information
 - **Secure logout** functionality
 
@@ -207,11 +207,11 @@ create policy "Users can update own profile"
 | Feature | Original (PHP) | Modern (React) |
 |---------|----------------|----------------|
 | Frontend | HTML/CSS/JS | React + TypeScript |
-| Backend | PHP + MySQL | Supabase |
+| Backend | PHP + MySQL | Firebase |
 | Styling | SASS/CSS | Chakra UI + CSS |
 | Animation | jQuery | Framer Motion |
-| Auth | Custom PHP | Supabase Auth |
-| Database | MySQL | PostgreSQL (Supabase) |
+| Auth | Custom PHP | Firebase Auth |
+| Database | MySQL | PostgreSQL (Firebase) |
 | Deployment | Traditional hosting | Vercel/Netlify |
 
 ## 🚀 Deployment

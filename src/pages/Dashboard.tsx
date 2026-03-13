@@ -6,9 +6,10 @@ import {
   Text,
   Button,
   VStack,
-  HStack,
   Flex,
   useColorMode,
+  useBreakpointValue,
+  SimpleGrid,
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
@@ -21,6 +22,12 @@ const MotionBox = motion(Box)
 const Dashboard: React.FC = () => {
   const navigate = useNavigate()
   const { colorMode } = useColorMode()
+
+  // Responsive values
+  const containerPadding = useBreakpointValue({ base: '60px', md: '80px' })
+  const headingSize = useBreakpointValue({ base: '3xl', md: '4xl', lg: '5xl' })
+  const textSize = useBreakpointValue({ base: 'md', md: 'lg', lg: 'xl' })
+  const buttonSize = useBreakpointValue({ base: 'md', md: 'lg' })
 
   const handleStartDocument = () => {
     navigate('/generate')
@@ -87,17 +94,17 @@ const Dashboard: React.FC = () => {
         backdropFilter="blur(15px)"
       />
 
-      <Container maxW="6xl" pt="80px">
+      <Container maxW="6xl" pt={containerPadding} px={{ base: 4, md: 8 }}>
         <MotionBox
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <VStack spacing={12} textAlign="center">
+          <VStack spacing={{ base: 8, md: 12 }} textAlign="center">
             {/* Welcome Section */}
-            <VStack spacing={6}>
+            <VStack spacing={{ base: 4, md: 6 }}>
               <Heading
-                fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}
+                fontSize={headingSize}
                 color={colorMode === 'dark' ? 'white' : 'gray.800'}
                 fontWeight="900"
               >
@@ -107,10 +114,11 @@ const Dashboard: React.FC = () => {
                 </Text>
               </Heading>
               <Text
-                fontSize="xl"
+                fontSize={textSize}
                 color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}
                 maxW="2xl"
                 lineHeight="tall"
+                px={{ base: 4, md: 0 }}
               >
                 Powered by Alice - Your AI legal assistant ready to help you create
                 professional legal documents with ease.
@@ -118,9 +126,14 @@ const Dashboard: React.FC = () => {
             </VStack>
 
             {/* Action Buttons */}
-            <HStack spacing={6} flexWrap="wrap" justify="center">
+            <Flex
+              direction={{ base: 'column', md: 'row' }}
+              gap={{ base: 4, md: 6 }}
+              justify="center"
+              w="full"
+            >
               <Button
-                size="lg"
+                size={buttonSize}
                 bg="brand.500"
                 color="white"
                 _hover={{ bg: 'brand.600' }}
@@ -128,12 +141,13 @@ const Dashboard: React.FC = () => {
                 rightIcon={<FiFileText />}
                 fontWeight="700"
                 textTransform="uppercase"
-                px={8}
+                px={{ base: 6, md: 8 }}
+                w={{ base: 'full', md: 'auto' }}
               >
                 Try AI Document Generation
               </Button>
               <Button
-                size="lg"
+                size={buttonSize}
                 variant="outline"
                 borderColor="brand.500"
                 color="brand.500"
@@ -141,21 +155,26 @@ const Dashboard: React.FC = () => {
                 onClick={() => navigate('/pricing')}
                 fontWeight="700"
                 textTransform="uppercase"
-                px={8}
+                px={{ base: 6, md: 8 }}
+                w={{ base: 'full', md: 'auto' }}
               >
                 View Pricing
               </Button>
-            </HStack>
+            </Flex>
 
             {/* Feature highlights */}
-            <Box w="full" maxW="4xl" mt={12}>
-              <Heading fontSize="2xl" color={colorMode === 'dark' ? 'white' : 'gray.800'} mb={8} textAlign="center">
+            <Box w="full" maxW="4xl" mt={{ base: 8, md: 12 }}>
+              <Heading
+                fontSize={{ base: 'xl', md: '2xl' }}
+                color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                mb={{ base: 6, md: 8 }}
+                textAlign="center"
+              >
                 What You Can Create
               </Heading>
-              <Flex
-                direction={{ base: 'column', md: 'row' }}
-                justify="space-between"
-                gap={8}
+              <SimpleGrid
+                columns={{ base: 1, md: 3 }}
+                spacing={{ base: 6, md: 8 }}
               >
                 {[
                   {
@@ -208,15 +227,22 @@ const Dashboard: React.FC = () => {
                       pointerEvents: 'none',
                     }}
                   >
-                    <Heading fontSize="lg" color="brand.500" mb={3}>
+                    <Heading
+                      fontSize={{ base: 'md', md: 'lg' }}
+                      color="brand.500"
+                      mb={3}
+                    >
                       {feature.title}
                     </Heading>
-                    <Text color={colorMode === 'dark' ? 'gray.400' : 'gray.600'} fontSize="sm">
+                    <Text
+                      color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}
+                      fontSize={{ base: 'xs', md: 'sm' }}
+                    >
                       {feature.description}
                     </Text>
                   </MotionBox>
                 ))}
-              </Flex>
+              </SimpleGrid>
             </Box>
           </VStack>
         </MotionBox>

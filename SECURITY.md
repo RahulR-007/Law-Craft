@@ -5,8 +5,8 @@
 Before running this application, you must create a `.env` file in the root directory with the following variables:
 
 ```bash
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_Firebase_URL=your_Firebase_project_url
+VITE_Firebase_ANON_KEY=your_Firebase_anon_key
 ```
 
 ## Security Notes
@@ -19,7 +19,7 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ## Setup Instructions
 
 1. Copy `.env.example` to `.env`
-2. Replace placeholder values with your actual Supabase credentials
+2. Replace placeholder values with your actual Firebase credentials
 3. Restart your development server
 
 ## Production Deployment
