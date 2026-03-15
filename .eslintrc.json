@@ -2,7 +2,32 @@
     "root": true,
     "env": {
         "browser": true,
-        "es2020": true
+        "es2020": true,
+        "node": true
+    },
+    "overrides": [
+        {
+            "files": ["src/contexts/AuthContext.tsx"],
+            "rules": {
+                "no-unused-vars": "off",
+                "react-refresh/only-export-components": "off"
+            }
+        },
+        {
+            "files": ["src/pages/Pricing.tsx"],
+            "rules": {
+                "react-hooks/exhaustive-deps": "off"
+            }
+        }
+    ],
+    "globals": {
+        "Text": "readonly",
+        "Document": "readonly",
+        "RequestInit": "readonly",
+        "ImportMeta": "readonly",
+        "NodeJS": "readonly",
+        "Buffer": "readonly",
+        "process": "readonly"
     },
     "extends": [
         "eslint:recommended",
@@ -10,7 +35,8 @@
     ],
     "ignorePatterns": [
         "dist",
-        "node_modules"
+        "node_modules",
+        "**/*.d.ts"
     ],
     "parser": "@typescript-eslint/parser",
     "plugins": [

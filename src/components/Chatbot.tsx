@@ -137,7 +137,9 @@ const Chatbot: React.FC = () => {
                 }
                 setMessages(prev => [...prev, warningMessage])
 
-                setTimeout(() => useFallbackResponse(message), 500)
+                setTimeout(() => {
+                    fallbackResponse(message)
+                }, 500)
                 return
             }
 
@@ -202,7 +204,7 @@ ${message}`
                 }
             } catch (ollamaError) {
                 setMessages(prev => prev.filter(m => m.id !== botResponseId))
-                useFallbackResponse(message)
+                fallbackResponse(message)
             }
         } catch (error) {
             console.error('Error:', error)
@@ -211,8 +213,8 @@ ${message}`
         }
     }
 
-    // Fallback responses
-    const useFallbackResponse = (message: string) => {
+    // Fallback responses (not a React Hook)
+    const fallbackResponse = (message: string) => {
         const lowerMsg = message.toLowerCase()
         let response = ''
 

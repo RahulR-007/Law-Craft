@@ -30,6 +30,10 @@ export interface OllamaStreamEvent {
     eval_duration?: number;
 }
 
+// eslint / TS DOM typing helpers
+// (needed because ESLint env is set to browser+node but doesn't know TS lib types)
+type RequestInit = globalThis.RequestInit
+
 import { loadAISettings } from './aiSettings';
 
 // Default configuration fallback

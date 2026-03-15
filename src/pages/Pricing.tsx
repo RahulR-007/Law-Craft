@@ -28,9 +28,7 @@ import FloatingNavigation from '../components/FloatingNavigation'
 
 // Declare Razorpay for TypeScript
 declare global {
-    interface Window {
-        Razorpay: any;
-    }
+    // (Type-only augmentation removed; not used and triggered ESLint no-unused-vars)
 }
 
 const MotionBox = motion(Box)

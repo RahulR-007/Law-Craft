@@ -7,33 +7,29 @@ import {
 import { FiServer, FiCheckCircle, FiXCircle, FiSave, FiRefreshCw, FiSettings, FiSliders } from 'react-icons/fi';
 import { ResponsiveContainer } from '../components/ResponsiveContainer';
 import { loadAISettings, saveAISettings, AISettings, resetAISettings } from '../lib/aiSettings';
-import { checkServerHealth, getAvailableModels } from '../lib/ollamaIntegration';
+import { backendHealth, backendModels } from '../lib/backendClient';
 
 const AiSettingsPage: React.FC = () => {
     const { colorMode } = useColorMode();
     const toast = useToast();
-    
+
     const [settings, setSettings] = useState<AISettings>(loadAISettings());
     const [isChecking, setIsChecking] = useState(false);
     const [isServerActive, setIsServerActive] = useState<boolean | null>(null);
     const [availableModels, setAvailableModels] = useState<string[]>([]);
-    
+
     useEffect(() => {
-        checkConnection(settings.ollamaUrl);
+            checkConnection();
     }, []);
 
-    const checkConnection = async (url: string) => {
+    const checkConnection = async () => {
         setIsChecking(true);
         try {
-            const isHealthy = await checkServerHealth(url);
-            setIsServerActive(isHealthy);
-            
-            if (isHealthy) {
-                const models = await getAvailableModels(url);
-                setAvailableModels(models.map(m => m.name));
-            } else {
-                setAvailableModels([]);
-            }
+            // Settings UI remains, but connectivity is validated through backend API now.
+            // (The backend is hardcoded to local Ollama + llama3.1:8b.)
+            const health = await backendHealth();
+            setIsServerActive(health.ok);
+            setAvailableModels(health.ok ? await backendModels() : []);
         } catch (error) {
             setIsServerActive(false);
             setAvailableModels([]);
@@ -59,7 +55,7 @@ const AiSettingsPage: React.FC = () => {
 
     const handleReset = () => {
         const defaultSettings = resetAISettings();
-        if(defaultSettings) setSettings(defaultSettings);
+        if (defaultSettings) setSettings(defaultSettings);
         else setSettings(loadAISettings());
         checkConnection(loadAISettings().ollamaUrl);
         toast({
@@ -73,9 +69,9 @@ const AiSettingsPage: React.FC = () => {
     const borderColor = colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)';
 
     return (
-        <Box 
-            minH="100vh" 
-            pt={{ base: '80px', md: '100px' }} 
+        <Box
+            minH="100vh"
+            pt={{ base: '80px', md: '100px' }}
             pb={{ base: '100px', md: '4xl' }}
             bg={colorMode === 'dark' ? "black" : "gray.50"}
         >
@@ -119,28 +115,28 @@ const AiSettingsPage: React.FC = () => {
                                         Ollama Server Connection
                                     </Heading>
                                 </HStack>
-                                <Badge 
-                                    colorScheme={isChecking ? "blue" : isServerActive ? "green" : "red"} 
+                                <Badge
+                                    colorScheme={isChecking ? "blue" : isServerActive ? "green" : "red"}
                                     p={2} px={3} borderRadius="md" display="flex" alignItems="center" gap={2}
                                 >
                                     {isChecking ? "Checking..." : isServerActive ? <><FiCheckCircle /> Active</> : <><FiXCircle /> Offline</>}
                                 </Badge>
                             </Flex>
-                            
+
                             <FormControl>
                                 <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>
                                     Server URL (Endpoint)
                                 </FormLabel>
                                 <HStack>
-                                    <Input 
-                                        value={settings.ollamaUrl} 
+                                    <Input
+                                        value={settings.ollamaUrl}
                                         onChange={(e) => handleSettingChange('ollamaUrl', e.target.value)}
                                         bg={colorMode === 'dark' ? "rgba(255,255,255,0.05)" : "white"}
                                         color={colorMode === 'dark' ? 'white' : 'black'}
                                         border={`1px solid ${borderColor}`}
                                     />
-                                    <Button 
-                                        leftIcon={<FiRefreshCw />} 
+                                    <Button
+                                        leftIcon={<FiRefreshCw />}
                                         onClick={() => checkConnection(settings.ollamaUrl)}
                                         isLoading={isChecking}
                                     >
@@ -153,7 +149,7 @@ const AiSettingsPage: React.FC = () => {
                                 <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>
                                     Active Model
                                 </FormLabel>
-                                <Select 
+                                <Select
                                     value={settings.ollamaModel}
                                     onChange={(e) => handleSettingChange('ollamaModel', e.target.value)}
                                     bg={colorMode === 'dark' ? "rgba(255,255,255,0.05)" : "white"}
@@ -194,8 +190,8 @@ const AiSettingsPage: React.FC = () => {
                                     Temperature ({settings.temperature})
                                 </FormLabel>
                                 <Text fontSize="xs" color="gray.500" mb={2}>Controls randomness: Lower = focused, Higher = creative.</Text>
-                                <Slider 
-                                    value={settings.temperature} 
+                                <Slider
+                                    value={settings.temperature}
                                     min={0} max={2} step={0.1}
                                     onChange={(v) => handleSettingChange('temperature', v)}
                                     colorScheme="purple"
@@ -204,14 +200,14 @@ const AiSettingsPage: React.FC = () => {
                                     <SliderThumb />
                                 </Slider>
                             </FormControl>
-                            
+
                             <FormControl>
                                 <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>
                                     Top P ({settings.topP})
                                 </FormLabel>
                                 <Text fontSize="xs" color="gray.500" mb={2}>Limits token selection to a cumulative probability.</Text>
-                                <Slider 
-                                    value={settings.topP} 
+                                <Slider
+                                    value={settings.topP}
                                     min={0} max={1} step={0.05}
                                     onChange={(v) => handleSettingChange('topP', v)}
                                     colorScheme="purple"
@@ -225,8 +221,8 @@ const AiSettingsPage: React.FC = () => {
                                 <FormLabel color={colorMode === 'dark' ? 'white' : 'gray.700'}>
                                     Context Search Size (Top K): {settings.topK}
                                 </FormLabel>
-                                <Slider 
-                                    value={settings.topK} 
+                                <Slider
+                                    value={settings.topK}
                                     min={1} max={100} step={1}
                                     onChange={(v) => handleSettingChange('topK', v)}
                                     colorScheme="purple"
@@ -235,7 +231,7 @@ const AiSettingsPage: React.FC = () => {
                                     <SliderThumb />
                                 </Slider>
                             </FormControl>
-                            
+
                             <Divider borderColor={borderColor} />
 
                             <Flex justify="space-between" w="full">

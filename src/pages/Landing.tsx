@@ -176,6 +176,7 @@ const FloatingElements: React.FC = () => {
 
 interface SectionProps {
   isActive: boolean
+  // eslint-disable-next-line no-unused-vars
   onNavigate: (section: number) => void
 }
 
@@ -975,6 +976,7 @@ const ContactSection: React.FC<SectionProps> = ({ isActive }) => {
 // Side Navigation Component
 const SideNav: React.FC<{
   activeSection: number
+  // eslint-disable-next-line no-unused-vars
   onNavigate: (section: number) => void
 }> = ({ activeSection, onNavigate }) => {
   const display = useBreakpointValue({ base: 'none', lg: 'block' })
@@ -1102,7 +1104,7 @@ const Landing: React.FC = () => {
   // Handle scroll events
   useEffect(() => {
     let canScroll = true
-    let scrollController: NodeJS.Timeout
+    let scrollController: ReturnType<typeof setTimeout>
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault()

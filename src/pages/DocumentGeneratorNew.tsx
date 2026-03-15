@@ -31,7 +31,7 @@ import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
 import { FiDownload, FiSend } from 'react-icons/fi'
 import FloatingNavigation from '../components/FloatingNavigation'
-import { generateText, checkServerHealth } from '../lib/ollamaIntegration'
+import { backendExportDocx, backendGenerateDocument, backendHealth } from '../lib/backendClient'
 import { formatLegalDocument, validateLegalContent } from '../lib/legalSafetyPolicy'
 
 const MotionBox = motion(Box)
@@ -63,7 +63,7 @@ const DocumentGenerator: React.FC = () => {
 
     // Check server health on mount
     React.useEffect(() => {
-        checkServerHealth().then(setServerHealth).catch(() => setServerHealth(false))
+        backendHealth().then((r) => setServerHealth(r.ok)).catch(() => setServerHealth(false))
     }, [])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -187,7 +187,7 @@ Target length: 2000+ words (approximately 4 pages)`;
         if (serverHealth === false) {
             toast({
                 title: 'Server Unavailable',
-                description: 'Ollama server is not responding. Please ensure the server is running with Ollama.',
+                description: 'Backend AI server is not responding. Please start the local API server.',
                 status: 'error',
                 duration: 5000,
                 isClosable: true,
@@ -204,13 +204,9 @@ Target length: 2000+ words (approximately 4 pages)`;
                 setGenerationProgress(prev => Math.min(prev + 10, 90))
             }, 500)
 
-            // Generate document using Ollama
+            // Generate document using backend (which talks to local Ollama)
             const prompt = buildGenerationPrompt()
-            const rawDocument = await generateText(prompt, {
-                temperature: 0.3,
-                topP: 0.8,
-                numPredict: 4096, // ~4 pages minimum
-            })
+            const { text: rawDocument } = await backendGenerateDocument(prompt, 5)
 
             clearInterval(progressInterval)
             setGenerationProgress(95)
@@ -251,8 +247,8 @@ Target length: 2000+ words (approximately 4 pages)`;
         } catch (error) {
             console.error('Generation error:', error)
 
-            // Check if server died
-            const stillHealthy = await checkServerHealth()
+            // Check if backend died
+            const stillHealthy = await backendHealth().then((r) => r.ok).catch(() => false)
             setServerHealth(stillHealthy)
 
             toast({
@@ -268,22 +264,36 @@ Target length: 2000+ words (approximately 4 pages)`;
         }
     }
 
-    const handleDownload = () => {
-        const element = document.createElement('a')
-        const file = new Blob([generatedDocument], { type: 'text/plain' })
-        element.href = URL.createObjectURL(file)
-        element.download = `${formData.documentType}-${Date.now()}.txt`
-        document.body.appendChild(element)
-        element.click()
-        document.body.removeChild(element)
+    const handleDownload = async () => {
+        try {
+            const title = formData.documentType || 'Generated Document'
+            const blob = await backendExportDocx(title, generatedDocument)
 
-        toast({
-            title: 'Downloaded',
-            description: 'Document downloaded successfully.',
-            status: 'success',
-            duration: 2000,
-            isClosable: true,
-        })
+            const url = URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = `${title}-${Date.now()}.docx`
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+            URL.revokeObjectURL(url)
+
+            toast({
+                title: 'Downloaded',
+                description: 'DOCX downloaded successfully.',
+                status: 'success',
+                duration: 2000,
+                isClosable: true,
+            })
+        } catch (e: any) {
+            toast({
+                title: 'Download failed',
+                description: e?.message ?? 'Failed to export DOCX',
+                status: 'error',
+                duration: 4000,
+                isClosable: true,
+            })
+        }
     }
 
     return (
@@ -327,9 +337,9 @@ Target length: 2000+ words (approximately 4 pages)`;
                         <Alert status="error" borderRadius="lg" mb={6}>
                             <AlertIcon />
                             <Box>
-                                <Text fontWeight="bold">Ollama Server Unavailable</Text>
+                                <Text fontWeight="bold">AI Backend Unavailable</Text>
                                 <Text fontSize="sm">
-                                    Please ensure the server is running with Ollama enabled at 192.168.137.96:11434
+                                    Please start the local API server (it talks to your local Ollama).
                                 </Text>
                             </Box>
                         </Alert>

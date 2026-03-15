@@ -55,7 +55,7 @@ import {
     FiXCircle
 } from 'react-icons/fi'
 
-import { checkServerHealth } from '../lib/ollamaIntegration'
+import { backendHealth } from '../lib/backendClient'
 
 const MotionBox = motion(Box)
 
@@ -107,7 +107,7 @@ const Profile: React.FC = () => {
         const checkServer = async () => {
             setIsCheckingServer(true)
             try {
-                const isHealthy = await checkServerHealth()
+                const isHealthy = await backendHealth().then((r) => r.ok)
                 setIsAiServerActive(isHealthy)
             } catch (error) {
                 setIsAiServerActive(false)
@@ -695,164 +695,164 @@ const Profile: React.FC = () => {
                                 <Grid templateColumns={gridColumns} gap={8}>
                                     <GridItem>
                                         <VStack spacing={8} w="full">
-                                        <Card
-                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.02)"}
-                                            backdropFilter="blur(20px)"
-                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
-                                            borderRadius="2xl"
-                                            p={cardPadding}
-                                            w="full"
-                                            boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
-                                        >
-                                            <VStack spacing={6} align="start" w="full">
-                                                <Heading
-                                                    size={{ base: 'md', md: 'lg' }}
-                                                    color={colorMode === 'dark' ? 'white' : 'gray.800'}
-                                                >
-                                                    AI Server Status
-                                                </Heading>
-                                                
-                                                <Flex
-                                                    justify="space-between"
-                                                    align="center"
-                                                    w="full"
-                                                    p={4}
-                                                    borderRadius="xl"
-                                                    bg={colorMode === 'dark' ? "rgba(0,0,0,0.3)" : "white"}
-                                                    border={`1px solid ${colorMode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'}`}
-                                                    flexDirection={{ base: 'column', sm: 'row' }}
-                                                    gap={4}
-                                                >
-                                                    <HStack spacing={4}>
-                                                        <Box
-                                                            p={3}
-                                                            borderRadius="lg"
-                                                            bg={isCheckingServer ? "blue.500" : isAiServerActive ? "green.500" : "red.500"}
-                                                            color="white"
-                                                        >
-                                                            <FiServer size={24} />
-                                                        </Box>
-                                                        <VStack align="start" spacing={0}>
-                                                            <Text fontWeight="bold" color={colorMode === 'dark' ? 'white' : 'gray.800'}>
-                                                                Local Ollama Server
-                                                            </Text>
-                                                            <Text fontSize="sm" color={colorMode === 'dark' ? 'gray.400' : 'gray.500'}>
-                                                                192.168.137.96:11434
-                                                            </Text>
-                                                        </VStack>
-                                                    </HStack>
-                                                    
-                                                    <HStack>
-                                                        <Button
-                                                            size="sm"
-                                                            leftIcon={<FiActivity />}
-                                                            isLoading={isCheckingServer}
-                                                            onClick={async () => {
-                                                                setIsCheckingServer(true)
-                                                                try {
-                                                                    const isHealthy = await checkServerHealth()
-                                                                    setIsAiServerActive(isHealthy)
-                                                                } catch (error) {
-                                                                    setIsAiServerActive(false)
-                                                                } finally {
-                                                                    setIsCheckingServer(false)
-                                                                }
-                                                            }}
-                                                            variant="outline"
-                                                        >
-                                                            Check
-                                                        </Button>
-                                                        <Badge 
-                                                            colorScheme={isCheckingServer ? "blue" : isAiServerActive ? "green" : "red"} 
-                                                            p={2} 
-                                                            px={4}
-                                                            borderRadius="md"
-                                                            display="flex"
-                                                            alignItems="center"
-                                                            gap={2}
-                                                            fontSize="sm"
-                                                        >
-                                                            {isCheckingServer ? (
-                                                                "Checking..."
-                                                            ) : isAiServerActive ? (
-                                                                <><FiCheckCircle /> Active</>
-                                                            ) : (
-                                                                <><FiXCircle /> Offline</>
-                                                            )}
-                                                        </Badge>
-                                                    </HStack>
-                                                </Flex>
-                                                
-                                                <Text fontSize="sm" color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}>
-                                                    {isAiServerActive 
-                                                        ? "The LLaMA model server is active and ready to process legal documents." 
-                                                        : "Make sure the Ollama server is running. Check your OLLAMA_HOST bindings if connecting from another device."}
-                                                </Text>
-                                            </VStack>
-                                        </Card>
+                                            <Card
+                                                bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.02)"}
+                                                backdropFilter="blur(20px)"
+                                                border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
+                                                borderRadius="2xl"
+                                                p={cardPadding}
+                                                w="full"
+                                                boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
+                                            >
+                                                <VStack spacing={6} align="start" w="full">
+                                                    <Heading
+                                                        size={{ base: 'md', md: 'lg' }}
+                                                        color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                                    >
+                                                        AI Server Status
+                                                    </Heading>
 
-                                        <Card
-                                            bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.02)"}
-                                            backdropFilter="blur(20px)"
-                                            border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
-                                            borderRadius="2xl"
-                                            p={cardPadding}
-                                            boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
-                                        >
-                                            <VStack spacing={6} align="start">
-                                                <Heading
-                                                    size={{ base: 'md', md: 'lg' }}
-                                                    color={colorMode === 'dark' ? 'white' : 'gray.800'}
-                                                >
-                                                    Notifications
-                                                </Heading>
-
-                                                <VStack spacing={4} w="full">
-                                                    {[
-                                                        { key: 'emailNotifications', label: 'Email Notifications', icon: FiMail },
-                                                        { key: 'smsNotifications', label: 'SMS Notifications', icon: FiPhone },
-                                                        { key: 'documentUpdates', label: 'Document Updates', icon: FiFileText },
-                                                        { key: 'securityAlerts', label: 'Security Alerts', icon: FiShield },
-                                                        { key: 'marketingEmails', label: 'Marketing Emails', icon: FiBell }
-                                                    ].map((setting) => {
-                                                        const IconComponent = setting.icon
-                                                        return (
-                                                            <Flex
-                                                                key={setting.key}
-                                                                justify="space-between"
-                                                                align="center"
-                                                                w="full"
-                                                                flexDirection={{ base: 'row', sm: 'row' }}
-                                                                gap={2}
+                                                    <Flex
+                                                        justify="space-between"
+                                                        align="center"
+                                                        w="full"
+                                                        p={4}
+                                                        borderRadius="xl"
+                                                        bg={colorMode === 'dark' ? "rgba(0,0,0,0.3)" : "white"}
+                                                        border={`1px solid ${colorMode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'}`}
+                                                        flexDirection={{ base: 'column', sm: 'row' }}
+                                                        gap={4}
+                                                    >
+                                                        <HStack spacing={4}>
+                                                            <Box
+                                                                p={3}
+                                                                borderRadius="lg"
+                                                                bg={isCheckingServer ? "blue.500" : isAiServerActive ? "green.500" : "red.500"}
+                                                                color="white"
                                                             >
-                                                                <HStack spacing={3} flex="1" minW="0">
-                                                                    <IconComponent
-                                                                        color="#970fff"
-                                                                        size={18}
-                                                                    />
-                                                                    <Text
-                                                                        color={colorMode === 'dark' ? 'white' : 'gray.800'}
-                                                                        fontSize={{ base: 'sm', md: 'md' }}
-                                                                        noOfLines={1}
-                                                                    >
-                                                                        {setting.label}
-                                                                    </Text>
-                                                                </HStack>
-                                                                <Switch
-                                                                    isChecked={settings[setting.key as keyof typeof settings] as boolean}
-                                                                    onChange={(e) => setSettings({
-                                                                        ...settings,
-                                                                        [setting.key]: e.target.checked
-                                                                    })}
-                                                                    colorScheme="purple"
-                                                                    size={{ base: 'md', md: 'lg' }}
-                                                                />
-                                                            </Flex>
-                                                        )
-                                                    })}
+                                                                <FiServer size={24} />
+                                                            </Box>
+                                                            <VStack align="start" spacing={0}>
+                                                                <Text fontWeight="bold" color={colorMode === 'dark' ? 'white' : 'gray.800'}>
+                                                                    Local Ollama Server
+                                                                </Text>
+                                                                <Text fontSize="sm" color={colorMode === 'dark' ? 'gray.400' : 'gray.500'}>
+                                                                    localhost:8787 (API) → localhost:11434 (Ollama)
+                                                                </Text>
+                                                            </VStack>
+                                                        </HStack>
+
+                                                        <HStack>
+                                                            <Button
+                                                                size="sm"
+                                                                leftIcon={<FiActivity />}
+                                                                isLoading={isCheckingServer}
+                                                                onClick={async () => {
+                                                                    setIsCheckingServer(true)
+                                                                    try {
+                                                                        const isHealthy = await backendHealth().then((r) => r.ok)
+                                                                        setIsAiServerActive(isHealthy)
+                                                                    } catch (error) {
+                                                                        setIsAiServerActive(false)
+                                                                    } finally {
+                                                                        setIsCheckingServer(false)
+                                                                    }
+                                                                }}
+                                                                variant="outline"
+                                                            >
+                                                                Check
+                                                            </Button>
+                                                            <Badge
+                                                                colorScheme={isCheckingServer ? "blue" : isAiServerActive ? "green" : "red"}
+                                                                p={2}
+                                                                px={4}
+                                                                borderRadius="md"
+                                                                display="flex"
+                                                                alignItems="center"
+                                                                gap={2}
+                                                                fontSize="sm"
+                                                            >
+                                                                {isCheckingServer ? (
+                                                                    "Checking..."
+                                                                ) : isAiServerActive ? (
+                                                                    <><FiCheckCircle /> Active</>
+                                                                ) : (
+                                                                    <><FiXCircle /> Offline</>
+                                                                )}
+                                                            </Badge>
+                                                        </HStack>
+                                                    </Flex>
+
+                                                    <Text fontSize="sm" color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}>
+                                                        {isAiServerActive
+                                                            ? "The LLaMA model server is active and ready to process legal documents."
+                                                            : "Make sure the Ollama server is running. Check your OLLAMA_HOST bindings if connecting from another device."}
+                                                    </Text>
                                                 </VStack>
-                                            </VStack>
-                                        </Card>
+                                            </Card>
+
+                                            <Card
+                                                bg={colorMode === 'dark' ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.02)"}
+                                                backdropFilter="blur(20px)"
+                                                border={`1px solid ${colorMode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`}
+                                                borderRadius="2xl"
+                                                p={cardPadding}
+                                                boxShadow={colorMode === 'dark' ? 'none' : 'lg'}
+                                            >
+                                                <VStack spacing={6} align="start">
+                                                    <Heading
+                                                        size={{ base: 'md', md: 'lg' }}
+                                                        color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                                    >
+                                                        Notifications
+                                                    </Heading>
+
+                                                    <VStack spacing={4} w="full">
+                                                        {[
+                                                            { key: 'emailNotifications', label: 'Email Notifications', icon: FiMail },
+                                                            { key: 'smsNotifications', label: 'SMS Notifications', icon: FiPhone },
+                                                            { key: 'documentUpdates', label: 'Document Updates', icon: FiFileText },
+                                                            { key: 'securityAlerts', label: 'Security Alerts', icon: FiShield },
+                                                            { key: 'marketingEmails', label: 'Marketing Emails', icon: FiBell }
+                                                        ].map((setting) => {
+                                                            const IconComponent = setting.icon
+                                                            return (
+                                                                <Flex
+                                                                    key={setting.key}
+                                                                    justify="space-between"
+                                                                    align="center"
+                                                                    w="full"
+                                                                    flexDirection={{ base: 'row', sm: 'row' }}
+                                                                    gap={2}
+                                                                >
+                                                                    <HStack spacing={3} flex="1" minW="0">
+                                                                        <IconComponent
+                                                                            color="#970fff"
+                                                                            size={18}
+                                                                        />
+                                                                        <Text
+                                                                            color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                                                                            fontSize={{ base: 'sm', md: 'md' }}
+                                                                            noOfLines={1}
+                                                                        >
+                                                                            {setting.label}
+                                                                        </Text>
+                                                                    </HStack>
+                                                                    <Switch
+                                                                        isChecked={settings[setting.key as keyof typeof settings] as boolean}
+                                                                        onChange={(e) => setSettings({
+                                                                            ...settings,
+                                                                            [setting.key]: e.target.checked
+                                                                        })}
+                                                                        colorScheme="purple"
+                                                                        size={{ base: 'md', md: 'lg' }}
+                                                                    />
+                                                                </Flex>
+                                                            )
+                                                        })}
+                                                    </VStack>
+                                                </VStack>
+                                            </Card>
                                         </VStack>
                                     </GridItem>
 
