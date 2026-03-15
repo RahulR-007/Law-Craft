@@ -17,7 +17,6 @@ import {
     FiUser,
     FiHelpCircle,
     FiLogOut,
-    FiSettings,
     FiServer,
     FiDollarSign
 } from 'react-icons/fi'

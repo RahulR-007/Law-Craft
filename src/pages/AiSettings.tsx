@@ -4,7 +4,6 @@ import {
     Input, Button, Select, useToast, Flex, Badge,
     useColorMode, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Divider
 } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
 import { FiServer, FiCheckCircle, FiXCircle, FiSave, FiRefreshCw, FiSettings, FiSliders } from 'react-icons/fi';
 import { ResponsiveContainer } from '../components/ResponsiveContainer';
 import { loadAISettings, saveAISettings, AISettings, resetAISettings } from '../lib/aiSettings';
