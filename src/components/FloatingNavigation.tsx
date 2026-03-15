@@ -17,7 +17,9 @@ import {
     FiUser,
     FiHelpCircle,
     FiLogOut,
-    FiSettings
+    FiSettings,
+    FiServer,
+    FiDollarSign
 } from 'react-icons/fi'
 
 const MotionBox = motion(Box)
@@ -93,10 +95,16 @@ const FloatingNavigation: React.FC<FloatingNavProps> = () => {
             isActive: location.pathname === '/help'
         },
         {
-            icon: FiSettings,
+            icon: FiDollarSign,
             label: 'Pricing',
             path: '/pricing',
             isActive: location.pathname === '/pricing'
+        },
+        {
+            icon: FiServer,
+            label: 'AI Settings',
+            path: '/ai-settings',
+            isActive: location.pathname === '/ai-settings'
         }
     ]
 

@@ -5,7 +5,6 @@ import {
     HStack,
     Text,
     Input,
-    useToast,
     IconButton,
     Spinner,
     Avatar,
@@ -13,6 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { FiSend, FiMessageCircle, FiX, FiMinimize2 } from 'react-icons/fi'
 import { motion, AnimatePresence } from 'framer-motion'
+import { generateTextStream, checkServerHealth } from '../lib/ollamaIntegration'
 
 const MotionBox = motion(Box)
 
@@ -23,13 +23,38 @@ interface Message {
     timestamp: Date
 }
 
+// Chatbot Rules
+const CHATBOT_RULES = {
+    MAX_RESPONSE_LENGTH: 150, // Max characters per response
+    MAX_TOKENS: 128, // Max tokens for generation
+    RESPONSE_TIMEOUT: 30000, // 30 seconds timeout
+    ALLOWED_TOPICS: [
+        'contract',
+        'nda',
+        'employment',
+        'loan',
+        'lease',
+        'agreement',
+        'legal',
+        'document'
+    ],
+    RESTRICTED_TOPICS: [
+        'illegal',
+        'hack',
+        'bypass',
+        'fraud',
+        'crime',
+        'terrorism'
+    ]
+}
+
 const Chatbot: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [isMinimized, setIsMinimized] = useState(false)
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
-            text: 'Hello! I\'m Alice, your AI legal assistant. I can help you with legal document questions, contract advice, and general legal guidance. How can I assist you today?',
+            text: 'Hi! I\'m Alice. Ask me about contracts, NDAs, loans, or employment agreements.',
             sender: 'bot',
             timestamp: new Date()
         }
@@ -38,7 +63,6 @@ const Chatbot: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
-    const toast = useToast()
 
     const onClose = () => setIsOpen(false)
     const onToggle = () => setIsMinimized(!isMinimized)
@@ -61,11 +85,37 @@ const Chatbot: React.FC = () => {
         }
     }, [isOpen, isMinimized])
 
-    // Free AI API using Hugging Face Inference API (no key required)
+    // Ollama-powered AI response with legal focus
     const sendMessage = async (message: string) => {
         setIsLoading(true)
 
         try {
+            // Check message for restricted topics
+            const lowerMessage = message.toLowerCase()
+            const hasRestricted = CHATBOT_RULES.RESTRICTED_TOPICS.some(topic =>
+                lowerMessage.includes(topic)
+            )
+
+            if (hasRestricted) {
+                const userMessage: Message = {
+                    id: Date.now().toString(),
+                    text: message,
+                    sender: 'user',
+                    timestamp: new Date()
+                }
+                setMessages(prev => [...prev, userMessage])
+
+                const botMessage: Message = {
+                    id: (Date.now() + 1).toString(),
+                    text: "I can't assist with that topic. I'm here to help with legal documents and contracts only.",
+                    sender: 'bot',
+                    timestamp: new Date()
+                }
+                setMessages(prev => [...prev, botMessage])
+                setIsLoading(false)
+                return
+            }
+
             // Add user message
             const userMessage: Message = {
                 id: Date.now().toString(),
@@ -75,99 +125,121 @@ const Chatbot: React.FC = () => {
             }
             setMessages(prev => [...prev, userMessage])
 
-            // Use free Hugging Face API
+            // Check if Ollama server is available
+            const serverHealthy = await checkServerHealth()
+
+            if (!serverHealthy) {
+                const warningMessage: Message = {
+                    id: (Date.now() + 1).toString(),
+                    text: "Server unavailable. Using offline response.",
+                    sender: 'bot',
+                    timestamp: new Date()
+                }
+                setMessages(prev => [...prev, warningMessage])
+
+                setTimeout(() => useFallbackResponse(message), 500)
+                return
+            }
+
+            // Build the prompt with rules
+            const systemPrompt = `You are Alice. Answer in 1-2 sentences only. Focus: legal documents.
+
+${message}`
+
+            let fullResponse = ''
+            const botResponseId = (Date.now() + 1).toString()
+
+            let botResponse: Message = {
+                id: botResponseId,
+                text: '',
+                sender: 'bot',
+                timestamp: new Date()
+            }
+            setMessages(prev => [...prev, botResponse])
+
             try {
-                const response = await fetch('https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        inputs: `Legal Assistant: I am Alice, a legal AI assistant. User asks: "${message}". I respond with helpful legal guidance:`,
-                        parameters: {
-                            max_length: 150,
-                            temperature: 0.7,
-                            do_sample: true,
-                            top_p: 0.9
-                        }
-                    })
-                })
+                for await (const chunk of generateTextStream(systemPrompt, {
+                    temperature: 0.6,
+                    topP: 0.8,
+                    numPredict: CHATBOT_RULES.MAX_TOKENS,
+                })) {
+                    fullResponse += chunk
 
-                let botText = "I'm here to help with legal questions. However, please note that I provide general information only and this doesn't constitute legal advice."
-
-                if (response.ok) {
-                    const data = await response.json()
-                    if (data && data[0] && data[0].generated_text) {
-                        // Extract the response part after our prompt
-                        const fullText = data[0].generated_text
-                        const responseStart = fullText.indexOf('I respond with helpful legal guidance:') + 'I respond with helpful legal guidance:'.length
-                        const extractedResponse = fullText.substring(responseStart).trim()
-
-                        if (extractedResponse && extractedResponse.length > 10) {
-                            botText = extractedResponse.substring(0, 300) + (extractedResponse.length > 300 ? '...' : '')
-                        }
+                    // Enforce max length
+                    if (fullResponse.length > CHATBOT_RULES.MAX_RESPONSE_LENGTH) {
+                        fullResponse = fullResponse.substring(0, CHATBOT_RULES.MAX_RESPONSE_LENGTH) + '...'
+                        break
                     }
+
+                    setMessages(prev => {
+                        const newMessages = [...prev]
+                        const msgIndex = newMessages.findIndex(m => m.id === botResponseId)
+                        if (msgIndex !== -1) {
+                            newMessages[msgIndex] = {
+                                ...newMessages[msgIndex],
+                                text: fullResponse
+                            }
+                        }
+                        return newMessages
+                    })
                 }
 
-                // Add context-aware legal responses
-                if (message.toLowerCase().includes('contract')) {
-                    botText = "Regarding contracts: A contract is a legally binding agreement between parties. Key elements include offer, acceptance, consideration, and mutual consent. For specific contract review or drafting, I recommend consulting with a qualified attorney. " + botText
-                } else if (message.toLowerCase().includes('nda') || message.toLowerCase().includes('non-disclosure')) {
-                    botText = "NDAs (Non-Disclosure Agreements) protect confidential information. They typically include definitions of confidential information, obligations of receiving party, and duration of confidentiality. " + botText
-                } else if (message.toLowerCase().includes('loan')) {
-                    botText = "Loan agreements should specify loan amount, interest rate, repayment terms, and consequences of default. Both parties should understand all terms before signing. " + botText
+                // Add disclaimer
+                if (fullResponse.trim()) {
+                    const finalText = fullResponse + '\n\n⚠️ Not legal advice. Consult an attorney.'
+
+                    setMessages(prev => {
+                        const newMessages = [...prev]
+                        const msgIndex = newMessages.findIndex(m => m.id === botResponseId)
+                        if (msgIndex !== -1) {
+                            newMessages[msgIndex] = {
+                                ...newMessages[msgIndex],
+                                text: finalText
+                            }
+                        }
+                        return newMessages
+                    })
                 }
-
-                const botResponse: Message = {
-                    id: (Date.now() + 1).toString(),
-                    text: botText,
-                    sender: 'bot',
-                    timestamp: new Date()
-                }
-
-                setMessages(prev => [...prev, botResponse])
-            } catch (apiError) {
-                console.log('API call failed, using fallback response')
-
-                // Fallback intelligent responses based on keywords
-                let fallbackResponse = "I understand you're asking about legal matters. "
-
-                const lowerMessage = message.toLowerCase()
-                if (lowerMessage.includes('contract')) {
-                    fallbackResponse += "For contracts, ensure all parties understand the terms, obligations, and consequences. Key elements include clear offer, acceptance, consideration, and legal capacity of parties. Always have important contracts reviewed by a legal professional."
-                } else if (lowerMessage.includes('nda') || lowerMessage.includes('non-disclosure')) {
-                    fallbackResponse += "NDAs are crucial for protecting confidential information. They should clearly define what constitutes confidential information, duration of confidentiality, and permitted uses. Consider having an attorney draft or review your NDA."
-                } else if (lowerMessage.includes('loan')) {
-                    fallbackResponse += "Loan agreements should specify the principal amount, interest rate, payment schedule, and default consequences. Ensure compliance with applicable lending laws and consider legal review for significant amounts."
-                } else if (lowerMessage.includes('law') || lowerMessage.includes('legal')) {
-                    fallbackResponse += "Legal matters can be complex and vary by jurisdiction. While I can provide general information, specific legal advice should come from a qualified attorney familiar with your local laws and circumstances."
-                } else {
-                    fallbackResponse += "I can help with general legal information about contracts, NDAs, loan agreements, and other legal documents. However, for specific legal advice tailored to your situation, please consult with a qualified attorney."
-                }
-
-                fallbackResponse += " Is there a specific aspect of this topic you'd like me to explain further?"
-
-                const botResponse: Message = {
-                    id: (Date.now() + 1).toString(),
-                    text: fallbackResponse,
-                    sender: 'bot',
-                    timestamp: new Date()
-                }
-
-                setMessages(prev => [...prev, botResponse])
+            } catch (ollamaError) {
+                setMessages(prev => prev.filter(m => m.id !== botResponseId))
+                useFallbackResponse(message)
             }
         } catch (error) {
-            console.error('Error sending message:', error)
-            toast({
-                title: 'Error',
-                description: 'Failed to send message. Please try again.',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            })
+            console.error('Error:', error)
         } finally {
             setIsLoading(false)
         }
+    }
+
+    // Fallback responses
+    const useFallbackResponse = (message: string) => {
+        const lowerMsg = message.toLowerCase()
+        let response = ''
+
+        if (lowerMsg.includes('contract')) {
+            response = "A contract is a legal agreement. Key elements: offer, acceptance, consideration, consent."
+        } else if (lowerMsg.includes('nda')) {
+            response = "NDAs protect confidential information. Define what's confidential, obligations, duration."
+        } else if (lowerMsg.includes('loan')) {
+            response = "Loan agreements specify: amount, interest rate, repayment schedule, default terms."
+        } else if (lowerMsg.includes('employment')) {
+            response = "Employment contracts address: job title, compensation, hours, benefits, confidentiality."
+        } else if (lowerMsg.includes('lease')) {
+            response = "Leases set terms for property rental: duration, rent, maintenance, termination."
+        } else {
+            response = "I help with legal documents. Ask about contracts, NDAs, loans, employment, or leases."
+        }
+
+        response += "\n\n⚠️ Not legal advice. Consult attorney."
+
+        const botResponse: Message = {
+            id: (Date.now() + 1).toString(),
+            text: response,
+            sender: 'bot',
+            timestamp: new Date()
+        }
+
+        setMessages(prev => [...prev, botResponse])
     }
 
     const handleSendMessage = () => {

@@ -7,7 +7,9 @@ export default defineConfig({
   base: process.env.NODE_ENV === 'production' ? '/Law-Craft/' : '/',
   define: {
     'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(process.env.VITE_SUPABASE_URL || 'https://snbwdyhegzjprtcxbnvn.supabase.co'),
-    'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNuYndkeWhlZ3pqcHJ0Y3hibnZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDEwOTcsImV4cCI6MjA4ODgxNzA5N30.yzhWSsdc-bhDjqRu7_A3qDgw2tkI89vShlb-labTtzs')
+    'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNuYndkeWhlZ3pqcHJ0Y3hibnZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDEwOTcsImV4cCI6MjA4ODgxNzA5N30.yzhWSsdc-bhDjqRu7_A3qDgw2tkI89vShlb-labTtzs'),
+    'import.meta.env.VITE_OLLAMA_URL': JSON.stringify(process.env.VITE_OLLAMA_URL || 'http://10.1.216.43:11434'),
+    'import.meta.env.VITE_OLLAMA_MODEL': JSON.stringify(process.env.VITE_OLLAMA_MODEL || 'llama3.1:7b')
   },
   server: {
     port: 3000,

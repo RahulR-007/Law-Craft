@@ -10,10 +10,11 @@ import './App.css'
 const Landing = React.lazy(() => import('./pages/Landing'))
 const AuthPage = React.lazy(() => import('./pages/Auth'))
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
-const DocumentGenerator = React.lazy(() => import('./pages/DocumentGenerator'))
+const DocumentGenerator = React.lazy(() => import('./pages/DocumentGeneratorNew'))
 const Pricing = React.lazy(() => import('./pages/Pricing'))
 const Help = React.lazy(() => import('./pages/Help'))
 const Profile = React.lazy(() => import('./pages/Profile'))
+const AiSettingsPage = React.lazy(() => import('./pages/AiSettings'))
 
 // Loading component
 const LoadingSpinner = () => (
@@ -74,6 +75,14 @@ function App() {
                 <Route
                   path="/help"
                   element={<Help />}
+                />
+                <Route
+                  path="/ai-settings"
+                  element={
+                    <ProtectedRoute>
+                      <AiSettingsPage />
+                    </ProtectedRoute>
+                  }
                 />
                 <Route
                   path="/profile"
